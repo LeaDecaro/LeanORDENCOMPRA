@@ -1,1235 +1,614 @@
-*{
-  box-sizing:border-box;
-}
+const $ = s => document.querySelector(s);
+
+const $$ = s => [...document.querySelectorAll(s)];
+
+const rows = $('#rows');
+const schedule = $('#schedule');
+const parts = $('#parts');
+const details = $('#details');
 
 
-html,
-body{
-  margin:0;
-  padding:0;
+/* =========================================================
+   FORMATO DE DINERO
+========================================================= */
 
-  background:#e7e7e7;
+function money(n){
 
-  color:#111;
-
-  font-family:"Courier New",monospace;
-
-  font-size:8px;
-}
-
-
-body{
-  padding-bottom:30px;
-}
-
-
-/* =====================================================
-   BARRA DE EDICION
-===================================================== */
-
-button{
-  font-family:Arial,sans-serif;
-}
-
-
-.toolbar{
-
-  width:210mm;
-
-  margin:10px auto 8px;
-
-  background:#fff;
-
-  border:1px solid #bbb;
-
-  padding:7px 9px;
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  font-family:Arial,sans-serif;
+return new Intl.NumberFormat('es-AR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}).format(Number(n)||0);
 
 }
 
 
-.toolbar-title{
-  font-weight:700;
-}
+function num(v){
 
+v = String(v||'')
+.trim()
+.replace(/\$/g,'')
+.replace(/\./g,'')
+.replace(',','.');
 
-.toolbar button{
+let n = Number(v);
 
-  border:1px solid #777;
-
-  background:#f7f7f7;
-
-  padding:6px 10px;
-
-  border-radius:4px;
-
-  margin-left:4px;
-
-  cursor:pointer;
+return Number.isFinite(n) ? n : 0;
 
 }
 
 
-/* =====================================================
-   PAGINAS
-===================================================== */
+/* =========================================================
+   NÚMEROS A LETRAS
+========================================================= */
 
-.page{
+function words(n){
 
-  position:relative;
+n = Math.floor(Math.abs(Number(n)||0));
 
-  width:210mm;
+const u = [
+'cero',
+'uno',
+'dos',
+'tres',
+'cuatro',
+'cinco',
+'seis',
+'siete',
+'ocho',
+'nueve',
+'diez',
+'once',
+'doce',
+'trece',
+'catorce',
+'quince',
+'dieciséis',
+'diecisiete',
+'dieciocho',
+'diecinueve',
+'veinte'
+];
 
-  height:297mm;
+if(n<=20)
+return u[n];
 
-  margin:0 auto 12px;
+if(n<30)
+return'veinti'+u[n-20];
 
-  padding:7mm 8mm 13mm;
+const d=[
+'',
+'',
+'veinte',
+'treinta',
+'cuarenta',
+'cincuenta',
+'sesenta',
+'setenta',
+'ochenta',
+'noventa'
+];
 
-  background:#fff;
+if(n<100)
+return d[Math.floor(n/10)] +
+(n%10 ? ' y '+u[n%10] : '');
 
-  box-shadow:0 1px 8px #aaa;
+if(n<1000){
 
-  overflow:hidden;
+if(n===100)
+return'cien';
+
+const c=[
+'',
+'ciento',
+'doscientos',
+'trescientos',
+'cuatrocientos',
+'quinientos',
+'seiscientos',
+'setecientos',
+'ochocientos',
+'novecientos'
+];
+
+return c[Math.floor(n/100)] +
+(n%100 ? ' '+words(n%100) : '');
+
+}
+
+if(n<1e6){
+
+let a=Math.floor(n/1000);
+let b=n%1000;
+
+return(
+a===1 ? 'mil' : words(a)+' mil'
+)+
+(b ? ' '+words(b) : '');
+
+}
+
+if(n<1e9){
+
+let a=Math.floor(n/1e6);
+let b=n%1e6;
+
+return(
+a===1 ? 'un millón' : words(a)+' millones'
+)+
+(b ? ' '+words(b) : '');
+
+}
+
+return String(n);
 
 }
 
 
-/* =====================================================
-   ENCABEZADO
-===================================================== */
+/* =========================================================
+   RENGLONES
+========================================================= */
 
-.doc-header{
+function addRow(){
 
-  height:17mm;
+let i = rows.children.length + 1;
 
-  display:grid;
+let tr = document.createElement('tr');
 
-  grid-template-columns:62% 38%;
+tr.innerHTML = `
 
-  align-items:start;
+<td class="rn">
+${i}
+</td>
 
-}
+<td>
+<input
+class="qty"
+type="number"
+min="0"
+step="any">
+</td>
 
+<td>
 
-.brand{
+<textarea
+class="desc"
+rows="2"></textarea>
 
-  display:flex;
+<input
+class="brand"
+placeholder="Marca: ">
 
-  align-items:center;
+</td>
 
-  gap:2mm;
+<td>
 
-}
+<input
+class="period">
 
+</td>
 
-.shield{
+<td>
 
-  width:15mm;
+<input
+class="price"
+inputmode="decimal"
+placeholder="0,00">
 
-  height:15mm;
+</td>
 
-  border:1px solid #aaa;
+<td>
 
-  border-radius:50%;
+<input
+class="rowtotal"
+value="0,00"
+readonly>
 
-  display:flex;
+</td>
 
-  align-items:center;
+`;
 
-  justify-content:center;
+rows.appendChild(tr);
 
-  font-size:15px;
+bindRow(tr);
 
-  font-family:serif;
+syncSchedule();
 
-}
+syncDetails();
 
-
-.gov{
-
-  font-size:8px;
-
-  line-height:1.05;
-
-}
-
-
-.ministry{
-
-  text-align:left;
-
-  font-size:7.5px;
-
-  line-height:1.35;
-
-  padding-top:1mm;
-
-}
-
-
-.top-rule{
-
-  border-top:1px solid #111;
+calc();
 
 }
 
 
-/* =====================================================
-   FECHA / NUMERO
-===================================================== */
+function bindRow(tr){
 
-.top-data{
+$$('input,textarea',tr).forEach(x => {
 
-  display:grid;
+x.addEventListener('input',()=>{
 
-  grid-template-columns:33% 67%;
+calc();
 
-  gap:0;
+syncScheduleQty();
 
-  margin-top:3mm;
+syncDetails();
 
-}
+});
 
-
-.date-box{
-
-  border:.6px solid #111;
-
-  padding:1.5mm 2mm;
-
-  font-size:7px;
-
-  line-height:1.7;
-
-  width:61mm;
+});
 
 }
 
 
-.date-input{
+function removeRow(){
 
-  width:28mm;
+if(rows.children.length<=1){
 
-  border:0;
+alert('Debe quedar al menos un renglón.');
 
-  border-bottom:.5px solid #555;
+return;
 
-  font:inherit;
+}
 
-  background:#fff;
+rows.lastElementChild.remove();
+
+renumber();
+
+syncSchedule();
+
+syncDetails();
+
+calc();
 
 }
 
 
-.tiny-input{
+function renumber(){
 
-  width:17mm;
+$$('.rn').forEach((x,i)=>{
 
-  border:0;
+x.textContent=i+1;
 
-  border-bottom:.5px solid #555;
-
-  font:inherit;
-
-  background:#fff;
+});
 
 }
 
 
-.stamp{
-
-  justify-self:end;
-
-  width:61mm;
-
-  border:.6px solid #111;
-
-  padding:1.5mm;
-
-  font-size:6.4px;
-
-  font-weight:700;
-
-  line-height:1.25;
-
-}
-
-
-/* =====================================================
-   TITULOS
-===================================================== */
-
-h1{
-
-  text-align:center;
-
-  font-size:12px;
-
-  margin:3mm 0 4mm;
-
-}
-
-
-h2{
-
-  text-align:center;
-
-  font-size:10px;
-
-  margin:2mm 0 1.5mm;
-
-}
-
-
-h3{
-
-  text-align:center;
-
-  font-size:9px;
-
-  margin:0 0 4mm;
-
-}
-
-
-/* =====================================================
-   CAMPOS
-===================================================== */
-
-.fields{
-
-  font-size:7.5px;
-
-  line-height:1.65;
-
-}
-
-
-.fields>div{
-
-  height:4.2mm;
-
-}
-
-
-.fields input{
-
-  border:0;
-
-  border-bottom:.5px solid #333;
-
-  background:transparent;
-
-  outline:0;
-
-  width:42mm;
-
-  font:inherit;
-
-}
-
-
-.fields input.long{
-  width:82mm;
-}
-
-
-.fields input.short{
-  width:22mm;
-}
-
-
-.fields input.provider{
-  width:82mm;
-}
-
-
-.intro{
-
-  font-size:7.5px;
-
-  margin:1mm 0 2mm;
-
-}
-
-
-/* =====================================================
-   TABLA PRINCIPAL
-===================================================== */
-
-.oc-table{
-
-  width:100%;
-
-  border-collapse:collapse;
-
-  table-layout:fixed;
-
-  font-size:7px;
-
-}
-
-
-.oc-table th,
-.oc-table td{
-
-  border:.6px solid #111;
-
-}
-
-
-.oc-table th{
-
-  height:8mm;
-
-  background:#d0d0d0;
-
-  text-align:center;
-
-  font-weight:700;
-
-}
-
-
-.oc-table td{
-
-  vertical-align:top;
-
-  padding:1mm;
-
-}
-
-
-.c-reng{
-  width:10mm;
-}
-
-
-.c-cant{
-  width:14mm;
-}
-
-
-.c-item{
-  width:98mm;
-}
-
-
-.c-per{
-  width:11mm;
-}
-
-
-.c-price{
-  width:31mm;
-}
-
-
-.c-total{
-  width:31mm;
-}
-
-
-.oc-table input,
-.oc-table textarea{
-
-  font:inherit;
-
-  border:0;
-
-  outline:0;
-
-  background:transparent;
-
-  width:100%;
-
-}
-
-
-.oc-table textarea.desc{
-
-  height:12mm;
-
-  resize:none;
-
-  line-height:1.15;
-
-}
-
-
-.oc-table .marca{
-
-  height:4mm;
-
-}
-
-
-.oc-table .qty,
-.oc-table .period{
-
-  text-align:center;
-
-}
-
-
-.oc-table .price,
-.oc-table .subtotal{
-
-  text-align:right;
-
-}
-
-
-.right{
-
-  text-align:right;
-
-  padding-right:2mm;
-
-}
-
-
-/* =====================================================
-   TOTAL
-===================================================== */
-
-.son{
-
-  font-size:7.5px;
-
-  line-height:1.8;
-
-  margin-top:1.5mm;
-
-}
-
-
-.son input{
-
-  font:inherit;
-
-  border:0;
-
-  outline:0;
-
-  width:45mm;
-
-}
-
-
-/* =====================================================
-   TRANSACCION
-===================================================== */
-
-.transaccion{
-
-  font-size:7px;
-
-  margin-top:1mm;
-
-}
-
-
-.transaccion table{
-
-  border-collapse:collapse;
-
-  margin-top:1mm;
-
-  width:82mm;
-
-}
-
-
-.transaccion th,
-.transaccion td{
-
-  border:.5px solid #111;
-
-  text-align:center;
-
-  padding:1mm;
-
-}
-
-
-.transaccion th{
-
-  background:#d0d0d0;
-
-}
-
-
-.transaccion input{
-
-  width:100%;
-
-  border:0;
-
-  background:transparent;
-
-  outline:0;
-
-  font:inherit;
-
-  text-align:center;
-
-}
-
-
-/* =====================================================
-   TEXTO LEGAL
-===================================================== */
-
-.legal{
-
-  font-size:6.7px;
-
-  line-height:1.22;
-
-  text-align:justify;
-
-  margin-top:2mm;
-
-}
-
-
-/* =====================================================
+/* =========================================================
    CRONOGRAMA
-===================================================== */
+========================================================= */
 
-.section-title{
+function syncSchedule(){
 
-  font-weight:700;
+let old = [...schedule.children].map(x => ({
 
-  font-size:8px;
+p:x.querySelector('.plazo')?.value || '',
 
-  margin:2mm 0 1mm;
+l:x.querySelector('.lugar')?.value || ''
 
-}
+}));
 
+schedule.innerHTML='';
 
-.schedule-table{
+[...rows.children].forEach((r,i)=>{
 
-  width:100%;
+let tr=document.createElement('tr');
 
-  border-collapse:collapse;
+tr.innerHTML=`
 
-  font-size:7px;
+<td style="text-align:center">
+${i+1}
+</td>
 
-  table-layout:fixed;
+<td>
 
-}
+<input
+class="sqty"
+value="${r.querySelector('.qty').value||''}">
 
+</td>
 
-.schedule-table th,
-.schedule-table td{
+<td>
 
-  border:.6px solid #111;
+<input
+class="plazo"
+value="${old[i]?.p||''}">
 
-}
+</td>
 
+<td>
 
-.schedule-table th{
+<textarea
+class="lugar"
+rows="1">${old[i]?.l||''}</textarea>
 
-  background:#d0d0d0;
+</td>
 
-  height:7mm;
+`;
 
-  text-align:center;
+schedule.appendChild(tr);
 
-}
+tr.querySelector('.sqty')
+.addEventListener('input',e=>{
 
+r.querySelector('.qty').value=e.target.value;
 
-.schedule-table td{
+calc();
 
-  height:7mm;
+});
 
-  padding:1mm;
-
-  vertical-align:middle;
-
-}
-
-
-.schedule-table input,
-.schedule-table textarea{
-
-  width:100%;
-
-  border:0;
-
-  outline:0;
-
-  background:transparent;
-
-  font:inherit;
-
-  resize:none;
+});
 
 }
 
 
-.schedule-table .sqty{
+function syncScheduleQty(){
 
-  text-align:center;
+[...schedule.children].forEach((tr,i)=>{
 
-}
+let q = rows.children[i]?.querySelector('.qty');
 
+if(q)
+tr.querySelector('.sqty').value=q.value;
 
-.cert{
-
-  font-size:7px;
-
-  font-weight:700;
-
-  margin:2mm 0;
+});
 
 }
 
 
-/* =====================================================
-   FIRMAS
-===================================================== */
+/* =========================================================
+   DETALLE DEL ANEXO
+========================================================= */
 
-.firmas{
+function syncDetails(){
 
-  display:grid;
+let old = [...details.children].map(x =>
 
-  grid-template-columns:1fr 1fr 1fr;
+x.querySelector('.detExtra')?.value || ''
 
-  text-align:center;
+);
 
-  font-size:7px;
+details.innerHTML='';
 
-  margin-top:8mm;
+[...rows.children].forEach((r,i)=>{
 
-}
+let tr=document.createElement('tr');
 
+let text =
+r.querySelector('.desc').value +
+(
+r.querySelector('.brand').value
+?
+'\nMarca: '+r.querySelector('.brand').value
+:
+''
+);
 
-/* =====================================================
-   PIE
-===================================================== */
+tr.innerHTML=`
 
-footer{
+<td style="text-align:center">
+${i+1}
+</td>
 
-  position:absolute;
+<td>
 
-  left:8mm;
+<textarea
+class="detMain">${text
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')}</textarea>
 
-  right:8mm;
+<textarea
+class="detExtra"
+placeholder="Detalle de entrega / instrucciones">${old[i]||''}</textarea>
 
-  bottom:4mm;
+</td>
 
-  border-top:.5px solid #111;
+`;
 
-  padding-top:1mm;
+details.appendChild(tr);
 
-  display:flex;
-
-  justify-content:space-between;
-
-  font-size:6px;
-
-}
-
-
-/* =====================================================
-   ANEXO PRESUPUESTARIO
-===================================================== */
-
-.ann-top{
-
-  display:grid;
-
-  grid-template-columns:1fr auto;
-
-  font-size:7px;
-
-  margin-top:2mm;
+});
 
 }
 
 
-.budget-fields{
+/* =========================================================
+   PARTIDAS PRESUPUESTARIAS
+========================================================= */
 
-  margin-top:2mm;
+function addPart(){
 
-}
+let tr=document.createElement('tr');
 
+tr.innerHTML =
+'<td>'+
+Array(16)
+.fill('<input>')
+.join('</td><td>')+
+'</td>'+
+'<td>'+
+'<input class="pmonto" readonly value="0,00">'+
+'</td>';
 
-.budget-table{
+parts.appendChild(tr);
 
-  width:100%;
-
-  border-collapse:collapse;
-
-  table-layout:fixed;
-
-  font-size:5.4px;
-
-  margin-top:2mm;
-
-}
-
-
-.budget-table th,
-.budget-table td{
-
-  border:.5px solid #111;
-
-  text-align:center;
+calc();
 
 }
 
 
-.budget-table th{
+/* =========================================================
+   CÁLCULO DE TOTALES
+========================================================= */
 
-  background:#d0d0d0;
+function calc(){
 
-  height:7mm;
+let total=0;
 
-  padding:.5mm;
+[...rows.children].forEach(r=>{
 
-}
+let cantidad =
+Number(
+r.querySelector('.qty').value
+)||0;
 
+let precio =
+num(
+r.querySelector('.price').value
+);
 
-.budget-table td{
+let subtotal =
+cantidad * precio;
 
-  height:7mm;
+r.querySelector('.rowtotal').value =
+money(subtotal);
 
-}
+total += subtotal;
 
+});
 
-.budget-table input{
+$('#total').textContent =
+money(total);
 
-  width:100%;
+$('#commitTotal').textContent =
+money(total);
 
-  border:0;
+$('#words').textContent =
+words(total)+' '+
+(total===1?'peso':'pesos');
 
-  background:transparent;
+$$('.pmonto').forEach(x=>{
 
-  outline:0;
+x.value=money(total);
 
-  font:inherit;
-
-  font-size:5.3px;
-
-  text-align:center;
-
-}
-
-
-.budget-table th:last-child,
-.budget-table td:last-child{
-
-  width:27mm;
-
-}
-
-
-.budget-total{
-
-  width:70%;
-
-  border:.6px solid #111;
-
-  margin-top:2mm;
-
-  padding:1.5mm;
-
-  font-size:7px;
-
-  line-height:1.8;
+});
 
 }
 
 
-.budget-total input{
+/* =========================================================
+   SINCRONIZACIÓN DE CABECERA
+========================================================= */
 
-  border:0;
+function sync(){
 
-  border-bottom:.5px solid #333;
+let d=$('#fecha').value;
 
-  outline:0;
+let n=$('#numero').value;
 
-  background:transparent;
+let p=$('#proveedor').value;
 
-  font:inherit;
+let shown =
+d
+?
+d.split('-').reverse().join('/')
+:
+'';
 
-  width:35mm;
+let ids=[
+'annDate',
+'detDate',
+'printDate'
+];
 
-}
+ids.forEach(id=>{
 
+$('#'+id).textContent=shown;
 
-/* =====================================================
-   ANEXO DE DETALLE
-===================================================== */
+});
 
-.detail-page{
+$$('.footDate').forEach(x=>{
 
-  overflow:hidden;
+x.textContent=shown;
 
-}
+});
 
+$('#annNum').textContent=n;
 
-.detail-title{
+$('#detNum').textContent=n;
 
-  font-size:10px;
+$$('.syncProv').forEach(x=>{
 
-  text-align:center;
+x.value=p;
 
-  font-weight:700;
-
-  margin:2mm 0;
-
-}
-
-
-.detail-subtitle{
-
-  text-align:center;
-
-  font-size:9px;
-
-  font-weight:700;
-
-  margin-bottom:3mm;
+});
 
 }
 
 
-.detail-table{
+/* =========================================================
+   INICIO
+========================================================= */
 
-  width:100%;
+function init(){
 
-  border-collapse:collapse;
+let d=new Date();
 
-  table-layout:fixed;
+let iso=d.toISOString().slice(0,10);
 
-  font-size:7px;
-
-}
-
-
-.detail-table th,
-.detail-table td{
-
-  border:.6px solid #111;
-
-}
+$('#fecha').value=iso;
 
 
-.detail-table th{
+/*
+   AL ABRIR:
+   EXACTAMENTE 1 RENGLÓN
+*/
 
-  background:#d0d0d0;
-
-  height:7mm;
-
-  text-align:left;
-
-  padding:1.5mm;
-
-}
+addRow();
 
 
-.detail-table th:first-child{
+/*
+   AL ABRIR:
+   EXACTAMENTE 1 PARTIDA
+*/
 
-  width:17mm;
-
-  text-align:center;
-
-}
-
-
-.detail-table td{
-
-  vertical-align:top;
-
-  padding:0;
-
-}
+addPart();
 
 
-.detail-row{
+/*
+   BOTONES
+*/
 
-  display:grid;
+$('#addRow').onclick=addRow;
 
-  grid-template-columns:17mm 1fr;
+$('#delRow').onclick=removeRow;
 
-}
+$('#addPart').onclick=addPart;
 
-
-.detail-row+.detail-row{
-
-  border-top:.6px solid #111;
-
-}
+$('#addPart2').onclick=addPart;
 
 
-.detail-num{
+/*
+   CAMPOS
+*/
 
-  padding:2mm;
+$('#fecha').onchange=sync;
 
-  text-align:center;
+$('#numero').oninput=sync;
+
+$('#proveedor').oninput=sync;
+
+
+/*
+   PDF / IMPRESIÓN
+*/
+
+$('#pdf').onclick=()=>{
+
+sync();
+
+calc();
+
+window.print();
+
+};
+
+
+sync();
 
 }
 
 
-.detail-content{
-
-  padding:2mm;
-
-}
-
-
-.detail-label{
-
-  font-weight:700;
-
-}
-
-
-.detail-print-desc,
-.detail-print-instructions{
-
-  white-space:pre-wrap;
-
-  line-height:1.25;
-
-}
-
-
-.detail-edit{
-
-  display:block;
-
-}
-
-
-.detail-edit textarea{
-
-  width:100%;
-
-  font:inherit;
-
-  border:.5px solid #aaa;
-
-  outline:0;
-
-  background:#fff;
-
-  resize:vertical;
-
-  min-height:15mm;
-
-  margin-top:1mm;
-
-}
-
-
-.detail-print{
-
-  display:none;
-
-}
-
-
-/* =====================================================
-   BOTON PDF
-===================================================== */
-
-.download-bar{
-
-  width:210mm;
-
-  margin:14px auto;
-
-  text-align:center;
-
-  font-family:Arial,sans-serif;
-
-}
-
-
-.download-bar button{
-
-  background:#21643e;
-
-  color:#fff;
-
-  border:0;
-
-  border-radius:5px;
-
-  padding:12px 25px;
-
-  font-weight:700;
-
-  font-size:13px;
-
-  cursor:pointer;
-
-}
-
-
-.download-bar span{
-
-  display:block;
-
-  margin-top:6px;
-
-  color:#555;
-
-  font-size:11px;
-
-}
-
-
-/* =====================================================
-   IMPRESION
-===================================================== */
-
-.print-only{
-
-  display:none;
-
-}
-
-
-@media print{
-
-  @page{
-
-    size:A4 portrait;
-
-    margin:0;
-
-  }
-
-
-  html,
-  body{
-
-    background:#fff!important;
-
-    margin:0!important;
-
-    padding:0!important;
-
-  }
-
-
-  .no-print{
-
-    display:none!important;
-
-  }
-
-
-  .print-only{
-
-    display:inline!important;
-
-  }
-
-
-  .page{
-
-    width:210mm!important;
-
-    height:297mm!important;
-
-    margin:0!important;
-
-    box-shadow:none!important;
-
-    overflow:hidden!important;
-
-    page-break-after:always;
-
-    break-after:page;
-
-  }
-
-
-  .page:last-child{
-
-    page-break-after:auto;
-
-    break-after:auto;
-
-  }
-
-
-  .detail-edit{
-
-    display:none!important;
-
-  }
-
-
-  .detail-print{
-
-    display:block!important;
-
-  }
-
-
-  .detail-table,
-  .detail-table tr,
-  .detail-table td{
-
-    break-inside:avoid;
-
-    page-break-inside:avoid;
-
-  }
-
-}
-
-
-/* =====================================================
-   CELULAR
-===================================================== */
-
-@media screen and (max-width:850px){
-
-  .toolbar,
-  .page,
-  .download-bar{
-
-    width:100%;
-
-  }
-
-
-  .page{
-
-    overflow:auto;
-
-  }
-
-
-  .toolbar{
-
-    display:block;
-
-  }
-
-
-  .toolbar-actions{
-
-    margin-top:5px;
-
-  }
-
-}
+document.addEventListener(
+'DOMContentLoaded',
+init
+);
