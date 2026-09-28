@@ -1,537 +1,1235 @@
 *{
-box-sizing:border-box
+  box-sizing:border-box;
 }
 
-html,body{
-margin:0;
-background:#e7e7e7;
-color:#111;
-font-family:"Courier New",monospace;
-font-size:9px
-}
-
-body{
-padding-bottom:35px
-}
-
-.toolbar{
-width:210mm;
-margin:10px auto 0;
-padding:8px;
-background:#fff;
-border:1px solid #bbb;
-display:flex;
-justify-content:space-between;
-align-items:center;
-font-family:Arial,sans-serif
-}
-
-.toolbar button,
-.part-controls button{
-margin-left:5px;
-padding:6px 10px;
-border:1px solid #777;
-background:#f5f5f5;
-border-radius:3px;
-cursor:pointer
-}
-
-.page{
-position:relative;
-width:210mm;
-height:297mm;
-margin:0 auto 16px;
-padding:7mm 8mm 14mm;
-background:#fff;
-box-shadow:0 1px 8px #aaa;
-overflow:hidden
-}
-
-.head{
-height:18mm;
-display:grid;
-grid-template-columns:65% 35%;
-align-items:start
-}
-
-.logo{
-width:58mm;
-max-height:16mm;
-object-fit:contain;
-object-position:left center
-}
-
-.head>div:last-child{
-padding:1mm 0 0 3mm;
-font-size:8px;
-line-height:1.4
-}
-
-.rule{
-border-top:.6px solid #111;
-margin-bottom:3mm
-}
-
-.top{
-display:grid;
-grid-template-columns:66% 34%;
-margin-bottom:3mm
-}
-
-.box{
-border:.5px solid #111;
-width:61mm;
-padding:1.5mm;
-font-size:8px;
-line-height:1.6
-}
-
-.box label{
-display:block
-}
-
-.box input{
-font:inherit;
-background:transparent;
-border:0;
-border-bottom:.5px solid #333;
-outline:0
-}
-
-.box input[type=date]{
-width:30mm
-}
-
-.box input[type=text]{
-width:21mm
-}
-
-.seal{
-border:.5px solid #111;
-padding:1.5mm;
-font-size:7px;
-font-weight:bold;
-line-height:1.25
-}
-
-h1{
-text-align:center;
-font-size:13px;
-margin:1mm 0 4mm
-}
-
-h2{
-text-align:center;
-font-size:11px;
-margin:2mm 0 2mm
-}
-
-h3{
-text-align:center;
-font-size:10px;
-margin:0 0 4mm
-}
-
-.data{
-font-size:8px;
-line-height:1.55
-}
-
-.data>div{
-margin-bottom:.5mm
-}
-
-.line{
-font:inherit;
-background:transparent;
-border:0;
-border-bottom:.5px solid #333;
-outline:0;
-height:4mm;
-padding:0 1mm;
-min-width:25mm
-}
-
-.wide{
-width:83mm
-}
-
-.short{
-width:24mm
-}
-
-.provider{
-width:82mm
-}
-
-.pay{
-width:42mm
-}
-
-p{
-font-size:8px;
-line-height:1.25
-}
-
-.grid{
-width:100%;
-border-collapse:collapse;
-table-layout:fixed
-}
-
-.grid th,
-.grid td{
-border:.5px solid #111
-}
-
-.grid th{
-background:#c9c9c9;
-text-align:center;
-font-weight:bold
-}
-
-.main{
-font-size:7.5px
-}
-
-.main th{
-height:8mm
-}
-
-.main .r{
-width:10mm
-}
-
-.main .q{
-width:14mm
-}
-
-.main .p{
-width:10mm
-}
-
-.main .u{
-width:31mm
-}
-
-.main .t{
-width:31mm
-}
-
-.main td{
-vertical-align:top;
-padding:1mm
-}
-
-.main input,
-.main textarea{
-width:100%;
-font:inherit;
-border:0;
-outline:0;
-background:transparent
-}
-
-.desc{
-min-height:13mm;
-resize:none;
-line-height:1.2
-}
-
-.qty,
-.period{
-text-align:center
-}
-
-.price,
-.rowtotal{
-text-align:right
-}
-
-.rowtotal{
-font-weight:bold
-}
-
-.right{
-text-align:right;
-padding-right:2mm
-}
-
-.son{
-font-size:8px;
-line-height:1.7;
-margin-top:2mm
-}
-
-.registered{
-font-size:7.5px;
-margin-top:1mm
-}
-
-.mini{
-border-collapse:collapse;
-margin-top:1mm
-}
-
-.mini th,
-.mini td{
-border:.5px solid #111;
-padding:1mm 4mm;
-text-align:center
-}
-
-.mini th{
-background:#c9c9c9
-}
-
-.mini input{
-width:10mm;
-border:0;
-outline:0;
-text-align:center;
-background:transparent
-}
-
-.legal{
-font-size:7.5px;
-line-height:1.25;
-margin-top:2mm;
-text-align:justify
-}
-
-.cron{
-margin-top:2.5mm;
-font-size:8px
-}
-
-.cron>b{
-display:block;
-margin-bottom:1mm
-}
-
-.cron th{
-height:8mm
-}
-
-.cron td{
-height:8mm;
-padding:1mm
-}
-
-.cron input,
-.cron textarea{
-width:100%;
-font:inherit;
-font-size:8px;
-background:transparent;
-border:0;
-outline:0
-}
-
-.cron textarea{
-resize:none
-}
-
-.sign{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-text-align:center;
-margin-top:8mm;
-font-size:8px
-}
-
-.annhead{
-display:grid;
-grid-template-columns:1fr auto;
-font-size:8px;
-margin-bottom:1mm
-}
-
-.budget{
-font-size:5.8px
-}
-
-.budget th{
-height:8mm;
-padding:.5mm
-}
-
-.budget td{
-height:7mm;
-padding:.5mm;
-text-align:center
-}
-
-.budget input{
-width:100%;
-border:0;
-outline:0;
-background:transparent;
-font:inherit;
-font-size:5.8px;
-text-align:center
-}
-
-.budget th:last-child,
-.budget td:last-child{
-width:29mm
-}
-
-.commit{
-border:.5px solid #111;
-width:70%;
-margin-top:3mm;
-padding:1.5mm;
-font-size:8px;
-line-height:1.8
-}
-
-.detail th{
-height:8mm;
-text-align:left
-}
-
-.detail th:first-child{
-width:16mm;
-text-align:center
-}
-
-.detail td{
-vertical-align:top;
-padding:1mm
-}
-
-.detail textarea{
-width:100%;
-min-height:45mm;
-resize:vertical;
-border:0;
-outline:0;
-background:transparent;
-font:inherit;
-font-size:8px;
-line-height:1.3
-}
-
-footer{
-position:absolute;
-left:8mm;
-right:8mm;
-bottom:4mm;
-border-top:.5px solid #111;
-padding-top:1.5mm;
-font-size:6.5px;
-display:flex;
-justify-content:space-between
-}
-
-.download{
-width:210mm;
-margin:20px auto;
-text-align:center;
-font-family:Arial
-}
-
-.download button{
-display:block;
-margin:auto;
-padding:12px 26px;
-border:0;
-border-radius:5px;
-background:#21643e;
-color:white;
-font-weight:bold;
-font-size:13px;
-cursor:pointer
-}
-
-.download small{
-display:block;
-margin-top:7px;
-color:#555
-}
-
-@media(max-width:850px){
-
-.toolbar,
-.page,
-.download{
-width:100%
-}
-
-.toolbar{
-display:block
-}
-
-.toolbar button{
-margin-top:5px
-}
-
-.page{
-overflow:auto
-}
-
-}
-
-@media print{
-
-@page{
-size:A4 portrait;
-margin:0
-}
 
 html,
 body{
-background:#fff!important;
-padding:0!important;
-margin:0!important
+  margin:0;
+  padding:0;
+
+  background:#e7e7e7;
+
+  color:#111;
+
+  font-family:"Courier New",monospace;
+
+  font-size:8px;
 }
 
-.no-print{
-display:none!important
+
+body{
+  padding-bottom:30px;
 }
+
+
+/* =====================================================
+   BARRA DE EDICION
+===================================================== */
+
+button{
+  font-family:Arial,sans-serif;
+}
+
+
+.toolbar{
+
+  width:210mm;
+
+  margin:10px auto 8px;
+
+  background:#fff;
+
+  border:1px solid #bbb;
+
+  padding:7px 9px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  font-family:Arial,sans-serif;
+
+}
+
+
+.toolbar-title{
+  font-weight:700;
+}
+
+
+.toolbar button{
+
+  border:1px solid #777;
+
+  background:#f7f7f7;
+
+  padding:6px 10px;
+
+  border-radius:4px;
+
+  margin-left:4px;
+
+  cursor:pointer;
+
+}
+
+
+/* =====================================================
+   PAGINAS
+===================================================== */
 
 .page{
-width:210mm!important;
-height:297mm!important;
-min-height:297mm!important;
-margin:0!important;
-padding:7mm 8mm 14mm!important;
-box-shadow:none!important;
-overflow:hidden;
-page-break-after:always;
-break-after:page
+
+  position:relative;
+
+  width:210mm;
+
+  height:297mm;
+
+  margin:0 auto 12px;
+
+  padding:7mm 8mm 13mm;
+
+  background:#fff;
+
+  box-shadow:0 1px 8px #aaa;
+
+  overflow:hidden;
+
 }
 
-.page:last-child{
-page-break-after:auto;
-break-after:auto
+
+/* =====================================================
+   ENCABEZADO
+===================================================== */
+
+.doc-header{
+
+  height:17mm;
+
+  display:grid;
+
+  grid-template-columns:62% 38%;
+
+  align-items:start;
+
 }
 
-.grid tr{
-break-inside:avoid;
-page-break-inside:avoid
+
+.brand{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:2mm;
+
 }
 
-.line{
-border-bottom:0!important
+
+.shield{
+
+  width:15mm;
+
+  height:15mm;
+
+  border:1px solid #aaa;
+
+  border-radius:50%;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:15px;
+
+  font-family:serif;
+
 }
 
-.box input{
-border:0!important
+
+.gov{
+
+  font-size:8px;
+
+  line-height:1.05;
+
 }
 
-.main textarea{
-overflow:hidden
+
+.ministry{
+
+  text-align:left;
+
+  font-size:7.5px;
+
+  line-height:1.35;
+
+  padding-top:1mm;
+
 }
 
-.main input,
-.main textarea,
-.cron input,
-.cron textarea,
-.budget input,
-.detail textarea{
-color:#111
+
+.top-rule{
+
+  border-top:1px solid #111;
+
 }
+
+
+/* =====================================================
+   FECHA / NUMERO
+===================================================== */
+
+.top-data{
+
+  display:grid;
+
+  grid-template-columns:33% 67%;
+
+  gap:0;
+
+  margin-top:3mm;
+
+}
+
+
+.date-box{
+
+  border:.6px solid #111;
+
+  padding:1.5mm 2mm;
+
+  font-size:7px;
+
+  line-height:1.7;
+
+  width:61mm;
+
+}
+
+
+.date-input{
+
+  width:28mm;
+
+  border:0;
+
+  border-bottom:.5px solid #555;
+
+  font:inherit;
+
+  background:#fff;
+
+}
+
+
+.tiny-input{
+
+  width:17mm;
+
+  border:0;
+
+  border-bottom:.5px solid #555;
+
+  font:inherit;
+
+  background:#fff;
+
+}
+
+
+.stamp{
+
+  justify-self:end;
+
+  width:61mm;
+
+  border:.6px solid #111;
+
+  padding:1.5mm;
+
+  font-size:6.4px;
+
+  font-weight:700;
+
+  line-height:1.25;
+
+}
+
+
+/* =====================================================
+   TITULOS
+===================================================== */
+
+h1{
+
+  text-align:center;
+
+  font-size:12px;
+
+  margin:3mm 0 4mm;
+
+}
+
+
+h2{
+
+  text-align:center;
+
+  font-size:10px;
+
+  margin:2mm 0 1.5mm;
+
+}
+
+
+h3{
+
+  text-align:center;
+
+  font-size:9px;
+
+  margin:0 0 4mm;
+
+}
+
+
+/* =====================================================
+   CAMPOS
+===================================================== */
+
+.fields{
+
+  font-size:7.5px;
+
+  line-height:1.65;
+
+}
+
+
+.fields>div{
+
+  height:4.2mm;
+
+}
+
+
+.fields input{
+
+  border:0;
+
+  border-bottom:.5px solid #333;
+
+  background:transparent;
+
+  outline:0;
+
+  width:42mm;
+
+  font:inherit;
+
+}
+
+
+.fields input.long{
+  width:82mm;
+}
+
+
+.fields input.short{
+  width:22mm;
+}
+
+
+.fields input.provider{
+  width:82mm;
+}
+
+
+.intro{
+
+  font-size:7.5px;
+
+  margin:1mm 0 2mm;
+
+}
+
+
+/* =====================================================
+   TABLA PRINCIPAL
+===================================================== */
+
+.oc-table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  table-layout:fixed;
+
+  font-size:7px;
+
+}
+
+
+.oc-table th,
+.oc-table td{
+
+  border:.6px solid #111;
+
+}
+
+
+.oc-table th{
+
+  height:8mm;
+
+  background:#d0d0d0;
+
+  text-align:center;
+
+  font-weight:700;
+
+}
+
+
+.oc-table td{
+
+  vertical-align:top;
+
+  padding:1mm;
+
+}
+
+
+.c-reng{
+  width:10mm;
+}
+
+
+.c-cant{
+  width:14mm;
+}
+
+
+.c-item{
+  width:98mm;
+}
+
+
+.c-per{
+  width:11mm;
+}
+
+
+.c-price{
+  width:31mm;
+}
+
+
+.c-total{
+  width:31mm;
+}
+
+
+.oc-table input,
+.oc-table textarea{
+
+  font:inherit;
+
+  border:0;
+
+  outline:0;
+
+  background:transparent;
+
+  width:100%;
+
+}
+
+
+.oc-table textarea.desc{
+
+  height:12mm;
+
+  resize:none;
+
+  line-height:1.15;
+
+}
+
+
+.oc-table .marca{
+
+  height:4mm;
+
+}
+
+
+.oc-table .qty,
+.oc-table .period{
+
+  text-align:center;
+
+}
+
+
+.oc-table .price,
+.oc-table .subtotal{
+
+  text-align:right;
+
+}
+
+
+.right{
+
+  text-align:right;
+
+  padding-right:2mm;
+
+}
+
+
+/* =====================================================
+   TOTAL
+===================================================== */
+
+.son{
+
+  font-size:7.5px;
+
+  line-height:1.8;
+
+  margin-top:1.5mm;
+
+}
+
+
+.son input{
+
+  font:inherit;
+
+  border:0;
+
+  outline:0;
+
+  width:45mm;
+
+}
+
+
+/* =====================================================
+   TRANSACCION
+===================================================== */
+
+.transaccion{
+
+  font-size:7px;
+
+  margin-top:1mm;
+
+}
+
+
+.transaccion table{
+
+  border-collapse:collapse;
+
+  margin-top:1mm;
+
+  width:82mm;
+
+}
+
+
+.transaccion th,
+.transaccion td{
+
+  border:.5px solid #111;
+
+  text-align:center;
+
+  padding:1mm;
+
+}
+
+
+.transaccion th{
+
+  background:#d0d0d0;
+
+}
+
+
+.transaccion input{
+
+  width:100%;
+
+  border:0;
+
+  background:transparent;
+
+  outline:0;
+
+  font:inherit;
+
+  text-align:center;
+
+}
+
+
+/* =====================================================
+   TEXTO LEGAL
+===================================================== */
+
+.legal{
+
+  font-size:6.7px;
+
+  line-height:1.22;
+
+  text-align:justify;
+
+  margin-top:2mm;
+
+}
+
+
+/* =====================================================
+   CRONOGRAMA
+===================================================== */
+
+.section-title{
+
+  font-weight:700;
+
+  font-size:8px;
+
+  margin:2mm 0 1mm;
+
+}
+
+
+.schedule-table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:7px;
+
+  table-layout:fixed;
+
+}
+
+
+.schedule-table th,
+.schedule-table td{
+
+  border:.6px solid #111;
+
+}
+
+
+.schedule-table th{
+
+  background:#d0d0d0;
+
+  height:7mm;
+
+  text-align:center;
+
+}
+
+
+.schedule-table td{
+
+  height:7mm;
+
+  padding:1mm;
+
+  vertical-align:middle;
+
+}
+
+
+.schedule-table input,
+.schedule-table textarea{
+
+  width:100%;
+
+  border:0;
+
+  outline:0;
+
+  background:transparent;
+
+  font:inherit;
+
+  resize:none;
+
+}
+
+
+.schedule-table .sqty{
+
+  text-align:center;
+
+}
+
+
+.cert{
+
+  font-size:7px;
+
+  font-weight:700;
+
+  margin:2mm 0;
+
+}
+
+
+/* =====================================================
+   FIRMAS
+===================================================== */
+
+.firmas{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr 1fr;
+
+  text-align:center;
+
+  font-size:7px;
+
+  margin-top:8mm;
+
+}
+
+
+/* =====================================================
+   PIE
+===================================================== */
+
+footer{
+
+  position:absolute;
+
+  left:8mm;
+
+  right:8mm;
+
+  bottom:4mm;
+
+  border-top:.5px solid #111;
+
+  padding-top:1mm;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  font-size:6px;
+
+}
+
+
+/* =====================================================
+   ANEXO PRESUPUESTARIO
+===================================================== */
+
+.ann-top{
+
+  display:grid;
+
+  grid-template-columns:1fr auto;
+
+  font-size:7px;
+
+  margin-top:2mm;
+
+}
+
+
+.budget-fields{
+
+  margin-top:2mm;
+
+}
+
+
+.budget-table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  table-layout:fixed;
+
+  font-size:5.4px;
+
+  margin-top:2mm;
+
+}
+
+
+.budget-table th,
+.budget-table td{
+
+  border:.5px solid #111;
+
+  text-align:center;
+
+}
+
+
+.budget-table th{
+
+  background:#d0d0d0;
+
+  height:7mm;
+
+  padding:.5mm;
+
+}
+
+
+.budget-table td{
+
+  height:7mm;
+
+}
+
+
+.budget-table input{
+
+  width:100%;
+
+  border:0;
+
+  background:transparent;
+
+  outline:0;
+
+  font:inherit;
+
+  font-size:5.3px;
+
+  text-align:center;
+
+}
+
+
+.budget-table th:last-child,
+.budget-table td:last-child{
+
+  width:27mm;
+
+}
+
+
+.budget-total{
+
+  width:70%;
+
+  border:.6px solid #111;
+
+  margin-top:2mm;
+
+  padding:1.5mm;
+
+  font-size:7px;
+
+  line-height:1.8;
+
+}
+
+
+.budget-total input{
+
+  border:0;
+
+  border-bottom:.5px solid #333;
+
+  outline:0;
+
+  background:transparent;
+
+  font:inherit;
+
+  width:35mm;
+
+}
+
+
+/* =====================================================
+   ANEXO DE DETALLE
+===================================================== */
+
+.detail-page{
+
+  overflow:hidden;
+
+}
+
+
+.detail-title{
+
+  font-size:10px;
+
+  text-align:center;
+
+  font-weight:700;
+
+  margin:2mm 0;
+
+}
+
+
+.detail-subtitle{
+
+  text-align:center;
+
+  font-size:9px;
+
+  font-weight:700;
+
+  margin-bottom:3mm;
+
+}
+
+
+.detail-table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  table-layout:fixed;
+
+  font-size:7px;
+
+}
+
+
+.detail-table th,
+.detail-table td{
+
+  border:.6px solid #111;
+
+}
+
+
+.detail-table th{
+
+  background:#d0d0d0;
+
+  height:7mm;
+
+  text-align:left;
+
+  padding:1.5mm;
+
+}
+
+
+.detail-table th:first-child{
+
+  width:17mm;
+
+  text-align:center;
+
+}
+
+
+.detail-table td{
+
+  vertical-align:top;
+
+  padding:0;
+
+}
+
+
+.detail-row{
+
+  display:grid;
+
+  grid-template-columns:17mm 1fr;
+
+}
+
+
+.detail-row+.detail-row{
+
+  border-top:.6px solid #111;
+
+}
+
+
+.detail-num{
+
+  padding:2mm;
+
+  text-align:center;
+
+}
+
+
+.detail-content{
+
+  padding:2mm;
+
+}
+
+
+.detail-label{
+
+  font-weight:700;
+
+}
+
+
+.detail-print-desc,
+.detail-print-instructions{
+
+  white-space:pre-wrap;
+
+  line-height:1.25;
+
+}
+
+
+.detail-edit{
+
+  display:block;
+
+}
+
+
+.detail-edit textarea{
+
+  width:100%;
+
+  font:inherit;
+
+  border:.5px solid #aaa;
+
+  outline:0;
+
+  background:#fff;
+
+  resize:vertical;
+
+  min-height:15mm;
+
+  margin-top:1mm;
+
+}
+
+
+.detail-print{
+
+  display:none;
+
+}
+
+
+/* =====================================================
+   BOTON PDF
+===================================================== */
+
+.download-bar{
+
+  width:210mm;
+
+  margin:14px auto;
+
+  text-align:center;
+
+  font-family:Arial,sans-serif;
+
+}
+
+
+.download-bar button{
+
+  background:#21643e;
+
+  color:#fff;
+
+  border:0;
+
+  border-radius:5px;
+
+  padding:12px 25px;
+
+  font-weight:700;
+
+  font-size:13px;
+
+  cursor:pointer;
+
+}
+
+
+.download-bar span{
+
+  display:block;
+
+  margin-top:6px;
+
+  color:#555;
+
+  font-size:11px;
+
+}
+
+
+/* =====================================================
+   IMPRESION
+===================================================== */
+
+.print-only{
+
+  display:none;
+
+}
+
+
+@media print{
+
+  @page{
+
+    size:A4 portrait;
+
+    margin:0;
+
+  }
+
+
+  html,
+  body{
+
+    background:#fff!important;
+
+    margin:0!important;
+
+    padding:0!important;
+
+  }
+
+
+  .no-print{
+
+    display:none!important;
+
+  }
+
+
+  .print-only{
+
+    display:inline!important;
+
+  }
+
+
+  .page{
+
+    width:210mm!important;
+
+    height:297mm!important;
+
+    margin:0!important;
+
+    box-shadow:none!important;
+
+    overflow:hidden!important;
+
+    page-break-after:always;
+
+    break-after:page;
+
+  }
+
+
+  .page:last-child{
+
+    page-break-after:auto;
+
+    break-after:auto;
+
+  }
+
+
+  .detail-edit{
+
+    display:none!important;
+
+  }
+
+
+  .detail-print{
+
+    display:block!important;
+
+  }
+
+
+  .detail-table,
+  .detail-table tr,
+  .detail-table td{
+
+    break-inside:avoid;
+
+    page-break-inside:avoid;
+
+  }
+
+}
+
+
+/* =====================================================
+   CELULAR
+===================================================== */
+
+@media screen and (max-width:850px){
+
+  .toolbar,
+  .page,
+  .download-bar{
+
+    width:100%;
+
+  }
+
+
+  .page{
+
+    overflow:auto;
+
+  }
+
+
+  .toolbar{
+
+    display:block;
+
+  }
+
+
+  .toolbar-actions{
+
+    margin-top:5px;
+
+  }
 
 }
