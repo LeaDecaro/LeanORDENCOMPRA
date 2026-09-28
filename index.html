@@ -1,127 +1,666 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Orden de Compra | Neuquén</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orden de Compra | SAFIPRO</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="app">
+  <div class="toolbar no-print">
+    <strong>Orden de Compra</strong>
+    <span class="toolbar-note">Editá la OC directamente.</span>
+    <button type="button" id="btnAgregarRenglon">+ Agregar renglón</button>
+    <button type="button" id="btnAgregarAnexo">+ Agregar partida</button>
+  </div>
 
-    <header class="encabezado-app">
-        <h1>ORDEN DE COMPRA</h1>
-        <p>Ministerio de Juventud, Deportes y Cultura</p>
-        <span>Provincia del Neuquén</span>
-    </header>
+  <main id="documentoPDF" class="document">
+
+    <!-- ========================= -->
+    <!-- PÁGINA 1 - ORDEN DE COMPRA -->
+    <!-- ========================= -->
+
+    <section class="paper page-1">
+
+      <header class="official-header">
+        <div class="logo-text">SAFIPRO</div>
+
+        <div class="header-title">
+          MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA<br>
+          CUIT:
+          <span contenteditable="true">30718390326</span>
+        </div>
+      </header>
+
+      <div class="top-line"></div>
+
+      <div class="top-boxes">
+
+        <div class="small-box">
+          Fecha Emision&nbsp;&nbsp;
+          <input
+            class="plain-input date"
+            id="fechaEmision"
+            value=""
+          >
+
+          <br>
+
+          Numero&nbsp;
+          <input
+            class="plain-input num-oc"
+            id="numeroOC"
+            value=""
+          >
+        </div>
+
+        <div class="stamp-box">
+          <b>
+            IMPUESTO DE SELLO EXENTO - NO<br>
+            REQUIERE INTERVENCION POR LA<br>
+            DIRECCION PROVINCIAL DE RENTAS<br>
+            RESOLUCION 530/DPR/11
+          </b>
+        </div>
+
+      </div>
+
+      <h1>ORDEN DE COMPRA</h1>
+
+      <div class="line-field">
+        Actuación Contable:
+        <input value="" class="wide-inline">
+
+        &nbsp;/&nbsp;0&nbsp;&nbsp;
+
+        Exp. Electrónico:
+        <input value="" class="exp-inline">
+      </div>
+
+      <div class="line-field">
+        Contratación directa Nro.
+        <input value="" class="short-inline">
+      </div>
+
+      <div class="line-field">
+        Señor Proveedor:
+        <input value="" class="provider-inline">
+      </div>
+
+      <div class="line-field">
+        Sírvase entregar en los plazos y lugar de entrega especificados
+        mas abajo los items que se detallan a continuación.
+      </div>
 
 
-    <section class="panel">
+      <!-- TABLA PRINCIPAL -->
 
-        <h2>Datos generales</h2>
+      <div class="table-wrap">
 
-        <div class="datos-grid">
+        <table class="oc-table">
 
-            <div>
-                <label>N° Orden de Compra</label>
-                <input id="numeroOrden" type="text">
-            </div>
+          <thead>
+            <tr>
+              <th class="w-reng">Reng</th>
+              <th class="w-cant">Cant.</th>
+              <th>Item Solicitado</th>
+              <th class="w-per">Per.</th>
+              <th class="w-price">Precio Unitario</th>
+              <th class="w-total">
+                Precio<br>
+                Total
+              </th>
+            </tr>
+          </thead>
 
-            <div>
-                <label>Fecha</label>
-                <input id="fechaOrden" type="date">
-            </div>
+          <tbody id="renglones"></tbody>
 
-            <div>
-                <label>Expediente</label>
-                <input id="expediente" type="text">
-            </div>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="total-label">
+                Total:
+              </td>
 
-            <div>
-                <label>Proveedor</label>
-                <input id="proveedor" type="text">
-            </div>
+              <td id="totalGeneral" class="money">
+                0,00
+              </td>
+            </tr>
+          </tfoot>
 
-            <div>
-                <label>CUIT</label>
-                <input id="cuit" type="text">
-            </div>
+        </table>
 
-            <div>
-                <label>Destino</label>
-                <input id="destino" type="text">
-            </div>
+      </div>
+
+
+      <div class="line-field">
+        Son:
+        <span id="totalLetras" class="computed">
+          cero pesos
+        </span>
+      </div>
+
+
+      <div class="line-field">
+        Forma de Pago:
+        <input
+          class="payment-inline"
+          value="CUENTA CORRIENTE"
+        >
+      </div>
+
+
+      <!-- REGISTRO CONTABLE -->
+
+      <div class="budget-mini">
+
+        <div class="line-field">
+          Registrado bajo Transacción Contable:
+        </div>
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Ejer</th>
+              <th>Juri</th>
+              <th>SA</th>
+              <th>Trans</th>
+              <th>Num</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><input value=""></td>
+              <td><input value=""></td>
+              <td><input value=""></td>
+              <td><input value=""></td>
+              <td><input value=""></td>
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- TEXTO LEGAL -->
+
+      <div class="legal">
+
+        Cualquier objeción a la presente Orden de Compra deberá
+        efectuarse por escrito dentro de las 48 horas de su recepción.
+
+        Esta Orden deberá ser cumplida íntegramente dentro del
+        término establecido.
+
+        Las mercaderías deberán entregarse con Remito duplicado,
+        sin cuyo requisito no se conformará la factura.
+
+        Las facturas en triplicado deberán presentarse dentro de
+        los 30 (treinta) días de efectuarse el suministro.
+
+        Para esta Provisión rigen las disposiciones contenidas en
+        el Reglamento de Contrataciones, Anexo II del Decreto
+        2758/95, sus modificatorios y complementarios.
+
+      </div>
+
+
+      <footer class="official-footer">
+
+        <div>
+          SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquen
+        </div>
+
+        <div class="footer-right">
+          Pagina 1<br>
+
+          Fecha Impresion
+
+          <input
+            class="plain-input date"
+            id="fechaImpresion"
+            value=""
+          >
+        </div>
+
+      </footer>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- PÁGINA 2 - ENTREGAS -->
+    <!-- ========================= -->
+
+    <section class="paper page-2">
+
+      <header class="official-header compact">
+
+        <div class="logo-text">
+          SAFIPRO
+        </div>
+
+        <div class="header-title">
+          MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA<br>
+          CUIT:
+          <span contenteditable="true">
+            30718390326
+          </span>
+        </div>
+
+      </header>
+
+      <div class="top-line"></div>
+
+
+      <div class="legal continuation">
+
+        requisito no se conformará la factura.
+        Las facturas en triplicado deberán presentarse dentro de
+        los 30 (treinta) días de efectuarse el suministro.
+
+        Para esta Provisión rigen las disposiciones contenidas en
+        el Reglamento de Contrataciones, Anexo II del Decreto
+        2758/95, sus modificatorios y complementarios.
+
+      </div>
+
+
+      <h2>
+        Cronograma de Entregas
+      </h2>
+
+
+      <table class="delivery-table">
+
+        <thead>
+          <tr>
+            <th>Renglon</th>
+            <th>Cantidad</th>
+            <th>
+              Plazo de<br>
+              Entrega
+            </th>
+            <th>
+              Lugar de Entrega
+            </th>
+          </tr>
+        </thead>
+
+        <tbody id="entregas"></tbody>
+
+      </table>
+
+
+      <div class="fiscal-note">
+
+        <b>
+          El Proveedor no necesita ser validado según Art. 4º
+          del Dto. 1394/14 Cert. cump. fiscal.
+        </b>
+
+      </div>
+
+
+      <div class="signatures">
+
+        <div>
+          <div class="signature-line"></div>
+          <div>
+            Firma y aclaracion de<br>
+            Proveedor
+          </div>
+        </div>
+
+        <div>
+          <div class="signature-date">
+            __/__/__
+          </div>
+
+          <div>
+            Fecha de Notificacion
+          </div>
+        </div>
+
+        <div>
+          <div class="signature-line"></div>
+
+          <div>
+            Firma y Aclaracion<br>
+            Funcionario Responsable
+          </div>
+        </div>
+
+      </div>
+
+
+      <footer class="official-footer">
+
+        <div>
+          SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquen
+        </div>
+
+        <div class="footer-right">
+          Pagina 2<br>
+          Fecha Impresion
+          <span class="print-date"></span>
+        </div>
+
+      </footer>
+
+    </section>
+
+
+    <!-- ====================================== -->
+    <!-- PÁGINA 3 - PARTIDAS PRESUPUESTARIAS -->
+    <!-- ====================================== -->
+
+    <section class="paper page-3">
+
+      <header class="official-header compact">
+
+        <div class="logo-text">
+          SAFIPRO
+        </div>
+
+        <div class="header-title">
+          MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA<br>
+          CUIT:
+          <span contenteditable="true">
+            30718390326
+          </span>
+        </div>
+
+      </header>
+
+      <div class="top-line"></div>
+
+
+      <div class="annex-head">
+
+        <h1>
+          ORDEN DE COMPRA
+        </h1>
+
+        <div class="annex-date-box">
+
+          Fecha Emision&nbsp;
+
+          <input
+            class="plain-input date"
+            data-copy="fechaEmision"
+          >
+
+          <br>
+
+          Numero
+
+          <input
+            class="plain-input num-oc"
+            data-copy="numeroOC"
+          >
 
         </div>
 
-    </section>
+      </div>
 
 
-    <section class="panel">
+      <h2 class="annex-title">
+        Anexo de Partidas Presupuestarias para Compromiso
+      </h2>
 
-        <div class="titulo-renglones">
 
-            <div>
-                <h2>Renglones</h2>
-                <p>La orden comienza con un renglón y podés agregar todos los necesarios.</p>
-            </div>
+      <div class="line-field">
+        Actuación Contable:
+        <input class="annex-act" value="">
+      </div>
 
-            <button id="btnAgregar" class="btn-agregar">
-                + Agregar renglón
-            </button>
+
+      <div class="line-field">
+        Contratación directa Nro.
+        <input class="short-inline" value="">
+      </div>
+
+
+      <div class="line-field">
+        Norma legal de Adjudicación:
+        <input
+          class="law-inline"
+          value="Ley Nº2141"
+        >
+      </div>
+
+
+      <div class="line-field">
+        Fecha de Adjudicación:
+        <input class="date" value="">
+      </div>
+
+
+      <div class="line-field">
+
+        Proveedor:
+
+        <input
+          class="provider-inline"
+          value=""
+        >
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table class="budget-table">
+
+          <thead>
+
+            <tr>
+              <th>Ejer</th>
+              <th>Juri</th>
+              <th>SA</th>
+              <th>Unor</th>
+              <th>Cpn1</th>
+              <th>Cpn2</th>
+              <th>Cpn3</th>
+              <th>Fina</th>
+              <th>Func</th>
+              <th>SFunc</th>
+              <th>INC</th>
+              <th>Ppal</th>
+              <th>Ppar</th>
+              <th>Spar</th>
+              <th>Fufi</th>
+              <th>Ubge</th>
+              <th>Monto</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="partidas"></tbody>
+
+        </table>
+
+      </div>
+
+
+      <div class="commit-totals">
+
+        <div>
+          <b>
+            Total Compromiso ejercicio actual:
+          </b>
+
+          <span id="compromisoActual">
+            0,00
+          </span>
+        </div>
+
+        <div>
+
+          <b>
+            Total Compromisos ejercicios futuros:
+          </b>
+
+          <input value="">
 
         </div>
 
-        <div id="listaRenglones"></div>
+      </div>
+
+
+      <footer class="official-footer">
+
+        <div>
+          SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquen
+        </div>
+
+        <div class="footer-right">
+          Pagina 3<br>
+          Fecha Impresion
+          <span class="print-date"></span>
+        </div>
+
+      </footer>
 
     </section>
 
 
-    <section class="panel">
+    <!-- =============================== -->
+    <!-- PÁGINA 4 - ANEXO / DETALLE -->
+    <!-- =============================== -->
 
-        <h2>Observaciones</h2>
+    <section class="paper page-4">
 
-        <textarea
-            id="observaciones"
-            rows="4"
-            placeholder="Observaciones..."></textarea>
+      <header class="official-header compact">
+
+        <div class="logo-text">
+          SAFIPRO
+        </div>
+
+        <div class="header-title">
+          MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA<br>
+          CUIT:
+          <span contenteditable="true">
+            30718390326
+          </span>
+        </div>
+
+      </header>
+
+      <div class="top-line"></div>
+
+
+      <div class="annex-head">
+
+        <h1>
+          ORDEN DE COMPRA
+        </h1>
+
+        <div class="annex-date-box">
+
+          Fecha Emision&nbsp;
+
+          <input
+            class="plain-input date"
+            data-copy="fechaEmision"
+          >
+
+          <br>
+
+          Numero
+
+          <input
+            class="plain-input num-oc"
+            data-copy="numeroOC"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="annex-subtitle">
+        Anexo
+      </div>
+
+
+      <div class="line-field">
+        Actuación Contable:
+        <input class="detail-act" value="">
+      </div>
+
+
+      <div class="line-field">
+        Contratación directa Nro.
+        <input class="short-inline" value="">
+      </div>
+
+
+      <div class="line-field">
+        Norma legal de Adjudicación:
+        <input
+          class="law-inline"
+          value="Ley Nº2141"
+        >
+      </div>
+
+
+      <div class="line-field">
+
+        Proveedor:
+
+        <input
+          class="provider-inline"
+          value=""
+        >
+
+      </div>
+
+
+      <table class="detail-table">
+
+        <thead>
+          <tr>
+            <th class="detail-reng">
+              Renglon
+            </th>
+
+            <th>
+              Item Solicitado
+            </th>
+          </tr>
+        </thead>
+
+        <tbody id="detalles"></tbody>
+
+      </table>
+
+
+      <footer class="official-footer">
+
+        <div>
+          SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquen
+        </div>
+
+        <div class="footer-right">
+          Pagina 4<br>
+          Fecha Impresion
+          <span class="print-date"></span>
+        </div>
+
+      </footer>
 
     </section>
 
-
-    <div class="botones">
-
-        <button id="btnVistaPrevia" class="btn-vista">
-            👁 Vista previa
-        </button>
-
-        <button id="btnPDF" class="btn-pdf">
-            📄 Descargar PDF
-        </button>
-
-    </div>
+  </main>
 
 
-    <section id="zonaPreview" class="zona-preview">
-
-        <h2>Vista previa</h2>
-
-        <div id="documentoPDF"></div>
-
-    </section>
-
-</div>
-
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
