@@ -13,6 +13,7 @@ body {
 }
 
 body {
+
     background: #e4e4e4;
 
     color: #111;
@@ -37,6 +38,7 @@ body {
     position: relative;
 
     width: 210mm;
+
     min-height: 297mm;
 
     margin: 20px auto;
@@ -90,15 +92,18 @@ body {
 .escudo {
 
     width: 25px;
+
     height: 31px;
 
     border: 1px solid #b9b9b9;
 
-    border-radius: 45% 45% 50% 50%;
+    border-radius:
+        45% 45% 50% 50%;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     color: #aeb7c2;
@@ -180,7 +185,10 @@ body {
 
     background: transparent;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 8px;
 
@@ -223,7 +231,7 @@ body {
 
 
 /* =========================================================
-   TÍTULO
+   TÍTULOS
 ========================================================= */
 
 .titulo-documento {
@@ -365,7 +373,7 @@ body {
 
 
 /* =========================================================
-   TABLA RENGLONES
+   TABLA DE RENGLONES
 ========================================================= */
 
 .tabla-contenedor {
@@ -558,7 +566,10 @@ body {
 
     background: transparent;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 8px;
 
@@ -852,7 +863,7 @@ body {
 
 
 /* =========================================================
-   PIE
+   PIE DE PÁGINA
 ========================================================= */
 
 .pie-pagina {
@@ -860,7 +871,9 @@ body {
     position: absolute;
 
     left: 10mm;
+
     right: 10mm;
+
     bottom: 6mm;
 
     border-top: 1px solid #222;
@@ -1084,7 +1097,10 @@ body {
 
     resize: vertical;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 8px;
 
@@ -1161,6 +1177,15 @@ body {
 .boton-pdf:active {
 
     transform: translateY(0);
+
+}
+
+
+.boton-pdf:disabled {
+
+    opacity: .65;
+
+    cursor: wait;
 
 }
 
@@ -1259,7 +1284,7 @@ body {
 
 
 /* =========================================================
-   PDF: EVITAR CORTES FEOS
+   EVITAR CORTES FEOS
 ========================================================= */
 
 .tabla-renglones tr,
