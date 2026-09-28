@@ -1,0 +1,146 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Orden de Compra</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Librería para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="app-header">
+        <div>
+            <h1>ORDEN DE COMPRA</h1>
+            <p>Ministerio de Juventud, Deportes y Cultura</p>
+            <span>Provincia del Neuquén</span>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- DATOS GENERALES -->
+
+        <section class="panel">
+
+            <h2>Datos de la Orden</h2>
+
+            <div class="form-grid">
+
+                <div class="campo">
+                    <label>N° Orden de Compra</label>
+                    <input type="text" id="numeroOrden" placeholder="Ej: 1234/1">
+                </div>
+
+                <div class="campo">
+                    <label>Fecha</label>
+                    <input type="date" id="fechaOrden">
+                </div>
+
+                <div class="campo">
+                    <label>Expediente</label>
+                    <input type="text" id="expediente" placeholder="EX-2026-XXXXXXXX-NEU-...">
+                </div>
+
+                <div class="campo">
+                    <label>Proveedor</label>
+                    <input type="text" id="proveedor" placeholder="Nombre del proveedor">
+                </div>
+
+                <div class="campo">
+                    <label>CUIT</label>
+                    <input type="text" id="cuit" placeholder="20-XXXXXXXX-X">
+                </div>
+
+                <div class="campo">
+                    <label>Destino</label>
+                    <input type="text" id="destino" placeholder="Lugar de entrega">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RENGLONES -->
+
+        <section class="panel">
+
+            <div class="section-title">
+
+                <div>
+                    <h2>Renglones</h2>
+                    <p>Agregá todos los renglones que necesites.</p>
+                </div>
+
+                <button type="button" id="agregarRenglon" class="btn-primary">
+                    + Agregar renglón
+                </button>
+
+            </div>
+
+
+            <div id="renglones"></div>
+
+        </section>
+
+
+        <!-- OBSERVACIONES -->
+
+        <section class="panel">
+
+            <h2>Observaciones</h2>
+
+            <textarea
+                id="observaciones"
+                rows="4"
+                placeholder="Observaciones, condiciones de entrega u otra información..."></textarea>
+
+        </section>
+
+
+        <!-- BOTONES -->
+
+        <div class="acciones">
+
+            <button type="button" id="vistaPrevia" class="btn-secondary">
+                👁 Vista previa
+            </button>
+
+            <button type="button" id="descargarPDF" class="btn-pdf">
+                📄 Descargar PDF
+            </button>
+
+        </div>
+
+
+        <!-- PREVISUALIZACIÓN -->
+
+        <section id="previewContainer" class="preview-container">
+
+            <div id="documentoPDF" class="documento">
+
+                <!-- El documento se genera mediante JavaScript -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
