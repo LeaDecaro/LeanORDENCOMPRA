@@ -1,111 +1,111 @@
-```javascript
-let contadorRenglones = 0;
+let numeroRenglon = 0;
 
 
-/* =========================
-   INICIO
-========================= */
+/* ================================
+   CUANDO CARGA LA PÁGINA
+================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
     agregarRenglon();
 
     document
-        .getElementById("agregarRenglon")
-        .addEventListener("click", agregarRenglon);
+        .getElementById("btnAgregar")
+        .addEventListener("click", function () {
+            agregarRenglon();
+        });
 
     document
-        .getElementById("vistaPrevia")
-        .addEventListener("click", generarVistaPrevia);
+        .getElementById("btnVistaPrevia")
+        .addEventListener("click", function () {
+            mostrarVistaPrevia();
+        });
 
     document
-        .getElementById("descargarPDF")
-        .addEventListener("click", descargarPDF);
+        .getElementById("btnPDF")
+        .addEventListener("click", function () {
+            descargarPDF();
+        });
 
 });
 
 
-/* =========================
+/* ================================
    AGREGAR RENGLÓN
-========================= */
+================================ */
 
 function agregarRenglon() {
 
-    contadorRenglones++;
+    numeroRenglon++;
 
-    const contenedor = document.getElementById("renglones");
+    const contenedor =
+        document.getElementById("listaRenglones");
 
-    const renglon = document.createElement("div");
+    const renglon =
+        document.createElement("div");
 
     renglon.className = "renglon";
 
-    renglon.dataset.numero = contadorRenglones;
-
     renglon.innerHTML = `
 
-        <div class="renglon-header">
+        <div class="renglon-cabecera">
 
-            <span class="renglon-numero">
-                Renglón ${contadorRenglones}
+            <span class="numero-renglon">
+                Renglón ${numeroRenglon}
             </span>
 
             ${
-                contadorRenglones > 1
-                ? `<button type="button"
-                    class="btn-eliminar"
-                    onclick="eliminarRenglon(this)">
+                numeroRenglon > 1
+                ?
+                `<button
+                    type="button"
+                    class="btn-eliminar">
                     Eliminar
-                   </button>`
-                : ""
+                </button>`
+                :
+                ""
             }
 
         </div>
 
 
-        <div class="renglon-grid">
+        <div class="campos-renglon">
 
-            <div class="campo">
-
+            <div>
                 <label>Descripción</label>
 
                 <input
                     type="text"
                     class="descripcion"
                     placeholder="Descripción del bien o servicio">
-
             </div>
 
 
-            <div class="campo">
-
+            <div>
                 <label>Cantidad</label>
 
                 <input
                     type="number"
                     class="cantidad"
+                    value="1"
                     min="0"
-                    step="any"
-                    value="1">
-
+                    step="any">
             </div>
 
 
-            <div class="campo">
-
+            <div>
                 <label>Precio unitario</label>
 
                 <input
                     type="number"
                     class="precio"
+                    value="0"
                     min="0"
-                    step="0.01"
-                    value="0">
-
+                    step="0.01">
             </div>
 
 
-            <div class="campo">
-
+            <div>
                 <label>Importe</label>
 
                 <input
@@ -113,167 +113,149 @@ function agregarRenglon() {
                     class="importe"
                     value="$ 0,00"
                     readonly>
-
             </div>
 
         </div>
-
     `;
 
 
     contenedor.appendChild(renglon);
 
 
-    const cantidad = renglon.querySelector(".cantidad");
-    const precio = renglon.querySelector(".precio");
-    const importe = renglon.querySelector(".importe");
+    /* Cálculo automático */
+
+    const cantidad =
+        renglon.querySelector(".cantidad");
+
+    const precio =
+        renglon.querySelector(".precio");
+
+    const importe =
+        renglon.querySelector(".importe");
 
 
-    function actualizarImporte() {
+    function calcular() {
 
-        const c = parseFloat(cantidad.value) || 0;
-        const p = parseFloat(precio.value) || 0;
+        const c =
+            parseFloat(cantidad.value) || 0;
+
+        const p =
+            parseFloat(precio.value) || 0;
 
         const resultado = c * p;
 
-        importe.value = formatearMoneda(resultado);
-
+        importe.value =
+            formatearMoneda(resultado);
     }
 
 
-    cantidad.addEventListener("input", actualizarImporte);
-    precio.addEventListener("input", actualizarImporte);
+    cantidad.addEventListener("input", calcular);
+
+    precio.addEventListener("input", calcular);
+
+
+    /* Botón eliminar */
+
+    const botonEliminar =
+        renglon.querySelector(".btn-eliminar");
+
+
+    if (botonEliminar) {
+
+        botonEliminar.addEventListener(
+            "click",
+            function () {
+
+                renglon.remove();
+
+                renumerarRenglones();
+
+            }
+        );
+
+    }
 
 }
 
 
-/* =========================
-   ELIMINAR RENGLÓN
-========================= */
-
-function eliminarRenglon(boton) {
-
-    const renglones = document.querySelectorAll(".renglon");
-
-    // Nunca permitir quedar en cero
-    if (renglones.length <= 1) {
-        return;
-    }
-
-    boton.closest(".renglon").remove();
-
-    renumerarRenglones();
-
-}
-
-
-/* =========================
+/* ================================
    RENUMERAR
-========================= */
+================================ */
 
 function renumerarRenglones() {
 
-    const renglones = document.querySelectorAll(".renglon");
-
-    renglones.forEach((renglon, index) => {
-
-        const numero = index + 1;
-
-        renglon.dataset.numero = numero;
-
-        const titulo = renglon.querySelector(".renglon-numero");
-
-        titulo.textContent = `Renglón ${numero}`;
-
-        const header = renglon.querySelector(".renglon-header");
-
-        let botonEliminar = header.querySelector(".btn-eliminar");
+    const renglones =
+        document.querySelectorAll(".renglon");
 
 
-        if (numero === 1) {
+    renglones.forEach(function (renglon, indice) {
 
-            if (botonEliminar) {
-                botonEliminar.remove();
-            }
+        const numero =
+            indice + 1;
 
-        } else {
-
-            if (!botonEliminar) {
-
-                botonEliminar = document.createElement("button");
-
-                botonEliminar.type = "button";
-
-                botonEliminar.className = "btn-eliminar";
-
-                botonEliminar.textContent = "Eliminar";
-
-                botonEliminar.onclick = function () {
-                    eliminarRenglon(this);
-                };
-
-                header.appendChild(botonEliminar);
-            }
-
-        }
+        renglon.querySelector(
+            ".numero-renglon"
+        ).textContent =
+            "Renglón " + numero;
 
     });
 
 }
 
 
-/* =========================
+/* ================================
    VISTA PREVIA
-========================= */
+================================ */
 
-function generarVistaPrevia() {
+function mostrarVistaPrevia() {
 
-    const documento = construirDocumentoPDF();
+    const contenedor =
+        document.getElementById("documentoPDF");
 
-    const contenedor = document.getElementById("documentoPDF");
+    contenedor.innerHTML =
+        construirDocumento();
 
-    contenedor.innerHTML = documento;
 
-    document.getElementById("previewContainer").style.display = "block";
+    document.getElementById(
+        "zonaPreview"
+    ).style.display = "block";
 
-    window.scrollTo({
-        top: document.getElementById("previewContainer").offsetTop,
+
+    document.getElementById(
+        "zonaPreview"
+    ).scrollIntoView({
         behavior: "smooth"
     });
 
 }
 
 
-/* =========================
+/* ================================
    CONSTRUIR DOCUMENTO
-========================= */
+================================ */
 
-function construirDocumentoPDF() {
+function construirDocumento() {
 
     const numeroOrden =
-        document.getElementById("numeroOrden").value || "-";
+        obtenerValor("numeroOrden");
 
     const fecha =
-        document.getElementById("fechaOrden").value;
+        obtenerValor("fechaOrden");
 
     const expediente =
-        document.getElementById("expediente").value || "-";
+        obtenerValor("expediente");
 
     const proveedor =
-        document.getElementById("proveedor").value || "-";
+        obtenerValor("proveedor");
 
     const cuit =
-        document.getElementById("cuit").value || "-";
+        obtenerValor("cuit");
 
     const destino =
-        document.getElementById("destino").value || "-";
+        obtenerValor("destino");
 
     const observaciones =
-        document.getElementById("observaciones").value || "-";
-
-
-    const fechaFormateada =
-        fecha ? convertirFecha(fecha) : "-";
+        obtenerValor("observaciones");
 
 
     const renglones =
@@ -282,40 +264,50 @@ function construirDocumentoPDF() {
 
     let filas = "";
 
-    let totalGeneral = 0;
+    let total = 0;
 
 
-    renglones.forEach((renglon, index) => {
+    renglones.forEach(function (renglon, indice) {
 
         const descripcion =
-            renglon.querySelector(".descripcion").value || "-";
+            renglon.querySelector(
+                ".descripcion"
+            ).value || "-";
+
 
         const cantidad =
             parseFloat(
-                renglon.querySelector(".cantidad").value
+                renglon.querySelector(
+                    ".cantidad"
+                ).value
             ) || 0;
+
 
         const precio =
             parseFloat(
-                renglon.querySelector(".precio").value
+                renglon.querySelector(
+                    ".precio"
+                ).value
             ) || 0;
 
 
-        const importe = cantidad * precio;
+        const importe =
+            cantidad * precio;
 
-        totalGeneral += importe;
+
+        total += importe;
 
 
         filas += `
 
             <tr>
 
-                <td class="col-renglon">
-                    ${index + 1}
+                <td class="col-numero">
+                    ${indice + 1}
                 </td>
 
                 <td class="col-descripcion">
-                    ${escapeHTML(descripcion)}
+                    ${escaparHTML(descripcion)}
                 </td>
 
                 <td class="col-cantidad">
@@ -337,82 +329,89 @@ function construirDocumentoPDF() {
     });
 
 
+    const fechaFormateada =
+        convertirFecha(fecha);
+
+
     return `
 
-        <div class="pdf-hoja">
+        <div class="hoja-pdf">
 
-            <div class="pdf-encabezado">
 
-                <div class="pdf-organismo">
+            <div class="encabezado-pdf">
+
+                <div class="organismo">
                     Ministerio de Juventud, Deportes y Cultura
                 </div>
 
-                <div class="pdf-provincia">
+                <div class="provincia">
                     Provincia del Neuquén
                 </div>
 
             </div>
 
 
-            <div class="pdf-titulo">
+            <div class="titulo-pdf">
                 ORDEN DE COMPRA
             </div>
 
 
-            <div class="pdf-datos">
+            <table class="datos-pdf">
 
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        N° Orden:
-                    </span>
-                    ${escapeHTML(numeroOrden)}
-                </div>
+                <tr>
 
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        Fecha:
-                    </span>
-                    ${fechaFormateada}
-                </div>
+                    <td>
+                        <strong>N° Orden:</strong>
+                        ${escaparHTML(numeroOrden || "-")}
+                    </td>
 
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        Expediente:
-                    </span>
-                    ${escapeHTML(expediente)}
-                </div>
+                    <td>
+                        <strong>Fecha:</strong>
+                        ${fechaFormateada || "-"}
+                    </td>
 
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        Proveedor:
-                    </span>
-                    ${escapeHTML(proveedor)}
-                </div>
-
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        CUIT:
-                    </span>
-                    ${escapeHTML(cuit)}
-                </div>
-
-                <div class="pdf-dato">
-                    <span class="pdf-label">
-                        Destino:
-                    </span>
-                    ${escapeHTML(destino)}
-                </div>
-
-            </div>
+                </tr>
 
 
-            <table class="tabla">
+                <tr>
+
+                    <td>
+                        <strong>Expediente:</strong>
+                        ${escaparHTML(expediente || "-")}
+                    </td>
+
+                    <td>
+                        <strong>Proveedor:</strong>
+                        ${escaparHTML(proveedor || "-")}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>CUIT:</strong>
+                        ${escaparHTML(cuit || "-")}
+                    </td>
+
+                    <td>
+                        <strong>Destino:</strong>
+                        ${escaparHTML(destino || "-")}
+                    </td>
+
+                </tr>
+
+            </table>
+
+
+            <table class="tabla-pdf">
 
                 <thead>
 
                     <tr>
 
-                        <th class="col-renglon">
+                        <th class="col-numero">
                             Renglón
                         </th>
 
@@ -446,31 +445,33 @@ function construirDocumentoPDF() {
             </table>
 
 
-            <div class="total">
+            <div class="total-pdf">
 
                 TOTAL:
-                &nbsp;
-                ${formatearMoneda(totalGeneral)}
+                ${formatearMoneda(total)}
 
             </div>
 
 
-            <div class="pdf-observaciones">
+            <div class="observaciones-pdf">
 
                 <strong>Observaciones:</strong>
 
                 <br><br>
 
-                ${escapeHTML(observaciones)}
+                ${escaparHTML(
+                    observaciones || "-"
+                )}
 
             </div>
 
 
-            <div class="pdf-pie">
+            <div class="pie-pdf">
 
                 Orden de Compra — Provincia del Neuquén
 
             </div>
+
 
         </div>
 
@@ -479,93 +480,127 @@ function construirDocumentoPDF() {
 }
 
 
-/* =========================
+/* ================================
    DESCARGAR PDF
-========================= */
+================================ */
 
 function descargarPDF() {
+
+    mostrarVistaPrevia();
+
 
     const documento =
         document.getElementById("documentoPDF");
 
 
-    if (!documento.innerHTML.trim()) {
+    if (
+        typeof html2pdf === "undefined"
+    ) {
 
-        generarVistaPrevia();
+        alert(
+            "No se pudo cargar el generador de PDF. Revisá la conexión a Internet."
+        );
 
+        return;
     }
 
 
-    setTimeout(() => {
+    const opciones = {
 
-        const opciones = {
+        margin: 0,
 
-            margin: 10,
+        filename:
+            obtenerNombreArchivo(),
 
-            filename:
-                obtenerNombreArchivo(),
+        image: {
+            type: "jpeg",
+            quality: 0.98
+        },
 
-            image: {
-                type: "jpeg",
-                quality: 0.98
-            },
+        html2canvas: {
 
-            html2canvas: {
+            scale: 2,
 
-                scale: 2,
+            useCORS: true,
 
-                useCORS: true
+            logging: false
 
-            },
+        },
 
-            jsPDF: {
+        jsPDF: {
 
-                unit: "mm",
+            unit: "mm",
 
-                format: "a4",
+            format: "a4",
 
-                orientation: "portrait"
+            orientation: "portrait"
 
-            },
+        },
 
-            pagebreak: {
+        pagebreak: {
 
-                mode: [
-                    "css",
-                    "legacy"
-                ]
+            mode: [
+                "css",
+                "legacy"
+            ]
 
-            }
+        }
 
-        };
+    };
 
 
-        html2pdf()
+    html2pdf()
 
-            .set(opciones)
+        .set(opciones)
 
-            .from(documento)
+        .from(documento)
 
-            .save();
-
-    }, 300);
+        .save();
 
 }
 
 
-/* =========================
-   UTILIDADES
-========================= */
+/* ================================
+   FUNCIONES AUXILIARES
+================================ */
+
+function obtenerValor(id) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (!elemento) {
+        return "";
+    }
+
+    return elemento.value.trim();
+
+}
+
 
 function convertirFecha(fecha) {
 
-    const partes = fecha.split("-");
+    if (!fecha) {
+        return "";
+    }
+
+
+    const partes =
+        fecha.split("-");
+
 
     if (partes.length !== 3) {
         return fecha;
     }
 
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+    return (
+        partes[2] +
+        "/" +
+        partes[1] +
+        "/" +
+        partes[0]
+    );
 
 }
 
@@ -583,7 +618,7 @@ function formatearMoneda(valor) {
 }
 
 
-function escapeHTML(texto) {
+function escaparHTML(texto) {
 
     return String(texto)
 
@@ -599,10 +634,20 @@ function escapeHTML(texto) {
 function obtenerNombreArchivo() {
 
     const numero =
-        document.getElementById("numeroOrden").value
-        || "orden";
+        obtenerValor("numeroOrden");
 
-    return `Orden_de_Compra_${numero}.pdf`;
+
+    if (numero) {
+
+        return (
+            "Orden_de_Compra_" +
+            numero +
+            ".pdf"
+        );
+
+    }
+
+
+    return "Orden_de_Compra.pdf";
 
 }
-```
