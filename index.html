@@ -11,10 +11,6 @@
 
 <body>
 
-<!-- =========================================================
-     DOCUMENTO COMPLETO
-========================================================= -->
-
 <div id="documento">
 
     <!-- =====================================================
@@ -24,6 +20,7 @@
     <section class="hoja">
 
         <!-- ENCABEZADO -->
+
         <div class="encabezado">
 
             <div class="gobierno">
@@ -91,27 +88,13 @@
 
             <div class="sello">
 
-                <b>
-                    IMPUESTO DE SELLO EXENTO - NO
-                </b>
-
+                <b>IMPUESTO DE SELLO EXENTO - NO</b>
                 <br>
-
-                <b>
-                    REQUIERE INTERVENCIÓN POR LA
-                </b>
-
+                <b>REQUIERE INTERVENCIÓN POR LA</b>
                 <br>
-
-                <b>
-                    DIRECCIÓN PROVINCIAL DE RENTAS
-                </b>
-
+                <b>DIRECCIÓN PROVINCIAL DE RENTAS</b>
                 <br>
-
-                <b>
-                    RESOLUCIÓN 530/DPR/11
-                </b>
+                <b>RESOLUCIÓN 530/DPR/11</b>
 
             </div>
 
@@ -244,7 +227,7 @@
 
                 <tbody id="renglones">
 
-                    <!-- JAVASCRIPT CREA RENG 1 -->
+                    <!-- JS CREA RENG 1 -->
 
                 </tbody>
 
@@ -405,8 +388,6 @@
         </table>
 
 
-        <!-- NOTA FISCAL -->
-
         <div class="nota-fiscal">
 
             El Proveedor no necesita ser validado según Art. 4º
@@ -457,8 +438,6 @@
 
         </div>
 
-
-        <!-- PIE -->
 
         <div class="pie-pagina">
 
@@ -676,6 +655,7 @@
 
             <div>
                 Fecha Emisión:
+
                 <input
                     class="campo-linea fecha"
                     data-ref="fecha"
@@ -684,6 +664,7 @@
 
             <div>
                 Número:
+
                 <input
                     class="campo-linea numero"
                     data-ref="numeroOC"
@@ -758,8 +739,6 @@
 
         </div>
 
-
-        <!-- TABLA PRESUPUESTARIA -->
 
         <div class="tabla-presupuesto-contenedor">
 
@@ -862,7 +841,7 @@
 
 
     <!-- =====================================================
-         PÁGINA 4 - ANEXO DE DETALLE
+         PÁGINA 4 - DETALLE
     ====================================================== -->
 
     <section class="hoja">
@@ -914,19 +893,26 @@
         <div class="anexo-numero">
 
             <div>
+
                 Fecha Emisión:
+
                 <input
                     class="campo-linea fecha"
                     data-ref="fecha"
                 >
+
             </div>
 
+
             <div>
+
                 Número:
+
                 <input
                     class="campo-linea numero"
                     data-ref="numeroOC"
                 >
+
             </div>
 
         </div>
@@ -971,7 +957,6 @@
                 >
 
             </div>
-
 
         </div>
 
@@ -1038,14 +1023,10 @@
 
 
 
-<!-- =========================================================
-     LIBRERÍA PDF
-========================================================= -->
-
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-</script>
-
+<!-- IMPORTANTE:
+     Acá NO cargamos html2pdf.
+     Se carga solamente al tocar Descargar PDF.
+-->
 
 <script src="script.js"></script>
 
