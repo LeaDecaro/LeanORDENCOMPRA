@@ -2,244 +2,629 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Orden de Compra - SAFIPRO</title>
+
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="toolbar no-print">
-  <strong>ORDEN DE COMPRA — edición</strong>
 
-  <div>
-    <button id="addRow">+ Agregar renglón</button>
-    <button id="delRow">− Quitar renglón</button>
-    <button id="addPart">+ Agregar partida</button>
+  <div class="toolbar-title">
+    ORDEN DE COMPRA
   </div>
+
+  <div class="toolbar-actions">
+
+    <button id="btnAddRow" type="button">
+      + Agregar renglón
+    </button>
+
+    <button id="btnRemoveRow" type="button">
+      − Quitar renglón
+    </button>
+
+    <button id="btnAddPartida" type="button">
+      + Agregar partida
+    </button>
+
+  </div>
+
 </div>
 
-<main id="documento">
+
+<div id="documento">
+
 
 <!-- =====================================================
-     PÁGINA 1
+     PAGINA 1 - ORDEN DE COMPRA
 ===================================================== -->
 
-<section class="page">
+<section class="page page-main">
 
-<header class="head">
+<header class="doc-header">
 
-<img
-src="data:image/webp;base64,UklGRkYLAABXRUJQVlA4IDoLAADwNQCdASosAV0APsFUo00npKMiKrXrWPAYCWcA18hCRyFi8LqlhcYnOb8qzkctfW/hH/sfNvvf+IGoF7F3fnZ/MC9m/vvgH6mvhf2AOCgoEeLlo2ewzPMt2C/ho4FCra340BR8OPuWCPWQT/3TT4hhCxajOXtOxHRXAqLN6EMnzy6BrSWUAXRe/CeE4QYUEvffEmOA8Gk6v4SpzU1oL3EwrGGKgKPnwOPaSta7TrsYk/7MNJ/9EoOf1+bUTFEvepSAWDmXOQP0XqqZNygVFXDj3n2ifCSFRW0ahcG61GG3JHrHQkLslSkBwXv85idJ2FvdUH3TjRqZ1IY8m+LqNtdlm3cI7JjBhi4K0syVWGUwc9KfxsZalXp1fZoEcsMc2k9b8Ec/3bjRubiPIgCUjc3SnkKK/z5m5LUQwzSCYBAVFr/41KBepSLlcYqEGvm36y29dSnv+v/MhC3i8iS1Qjsqi57mXu1In7TfI5laRa9GBEotdVNt0341NEtVfDo5OhLLC29ffbcz442ZzBkbG6nBPngIH9MHSOd6TjxqVLWqRfO+UIUWVHirh3ERBK8NAUfD0fc23k58AAD++KcqO3KxXTD2oj3HNWZPEutiAi/ww/uRT5ixFCKsdfpB7aFkpqp8qhayYBBW0nGB5JGVhSWfbqNhuKGhHZk28EAUHSRhHe54sLvfIF3Ipg42fYR0Vb+HWi84N0mg7Q2cDCmvP/nZvNAHZw6rjb+wVYgFsEx149ypbIeJnYOHorHuhJrrSzB6LApjmLjd9Jqk7pkoFpBYaHZnmTecIgD520Yi6/zWFWSdD5izCregaikMRHxWpGhO/7PcF3LrDs3c+NlFosdNC9mIG90qobHdIgF7uwTAz3kPVJ5u732vmQwzXU92VFtA3tlcsnsfIC4jvBiEROkLhQgMj+YvHrnvSDpbkD7dM89k0Keb/m3nr8jyby9UjQJi523UTi0bJWVfnHZqcT5w6B6WbgLHpq6VqmKsq9r8k/T21iS+Z7bQ65g7M6YzPhuO8aIgWS/58c0ewjoTBptGSQHfXklCP13lkEMyu8x/UvbntS6Ny1vn0KxLmVKIBunEUYbqsN8tB0143NkgczF9gnLLToSkYYJX6ox47XFZi3Q8poIOK9V7GH6myTTUl1/Ycm2QuhUVwEkcmmxeUHmhwPwyg9I96le7Z17TumU+PJ47a49DX1kjHM9q4azYcw0lLto+74zYDwpUfn6UsPDT7k/NJhGwq0yYBlQdkrEhu6uabuLJ6GGKMe5eCKvT10MXY+OaPzuXytHAdd1O85veZamrbAC42exqr+WCXLrXd6d0M8SKh4wbGQNsKXoBeJv1/EyiHwqL+CU352YW9uAXFIkicooslyLixFtbIV4jhRrDMeqCsB9aRmht1XtpSrfGJz/YHXDIRUHr0xsDN4kSe+I0qt1hoJlHRr+dExI6r+c9vALMOhQuZ0Oiw9Lx7JVjAu+EIn5cGy+P/iHYdNsqPuXilQb9EWRFO0pAYbmvaOdbHwah3tHitNDRs0uN7nAnQv5CJXhbLrgxnyDS6MySyh3EPmhsRzXWcwltUSiR1SyrgzW/nJ+mDYNlV0Tcg/spS8HnFlYdfPPfFTmGTym0GX426KW5fIxC8M9kjRkyoNtuEcNmDUhAzgxqviPCZFsZzjN+eK5jWsP/lBiw8z98t662U9EdV0t6D4oJXi5v6Rqvduxigu2qCh9TvaIJGXL6/eLjuILO3bvn5McRpE+lemvBeDm42oMP3ggF7HlSuJ4pAsMiD6K/ffOPhRGOhSDV5d81yxw/+F++k4PXWD802DHRL/o/VRbK/MVkjFoJbu4rOq2nOxfh7xb+MjTK6XkHkC0wKialnyUqlAwKmNRLoflNvGvQSykei9prf0NUycSueC2KnER5Nj6Gd3h/rl6ZqQs5JOxAEdWk6MxZCNBEurzeFtIfSZfNTfKAW2a92noYA0sUrzYhDAzQnGKZAMQ5C2kuFmBUQgEZnmF2+WdpikA/dHLJqlgi6L2BZNQFW69ROPCr9eemDjnnBTPgDy4Dnn5n+icOwkf35mX0jXkhLst766/cA3BJHiVMtUcFG6OlyZzv6QipD2gSg5UvseMpo4b7RruE4o9tRgSR7z4wQf6XbXP7lMbazqcxhMaolkgBoYLPodf6jPnf8BgR1dbqJUvTim1MUzKiXWaItKXKlBZAgaJCWPD+Qsn6YTVLYUiWVDQ9xzk+Hv+Jnf0tedE0niPAlb8G71saPoI1E+tjSgNjw9c5rNcarkHg0q1+oXe7mpOl5RP6RBd1rqJJrqDo3s74v+8Gnu32Lo2lQLSRgchHmku3mvTTlw8ZMJc/oOZFG9RCdQILaioHSfhWL0s/koNdWMOi1/j2UfWAiyY3MsHT0d+L4GKJDB8Ob/NaiVOSyrMIdQ0LgxrfLDXYLiNi6So/vzMpUsTPjfPSOPmyE9WK47ejCqHmOslHr7oV7GjO8XOFsmkMr8XUL+ok8tKw59JL5hV9m5Cm2EDxYE48hylX/5fNpo4MfdRnULVygFxvT/9pLpvsS/6SijaRlC1n952aSPpZYmWDDQkKkxUdq9ltePXc8YxYe/6m+3k0+HVpE4FfNeeTUS+76UdRyhlue4boeimkVOtxkTBwCfwGf/BbkvD58xVB1pToxSKLfJ0DNZZPIMxh4G3Wi7zfHStx/xRkjZmJV0+PJB6Ba2hKD6jY1GoMjvhJFpYAKYDvRf3YGkC9VvjWFD+fxxfcHq50yRYEO9TJQToE7NyZ2+tEotqMm3TqUsWqm0vg3UWDQ2f1Crm5gpKDxRmAy/11v2MwKgkJu6rlB39W9A8x6i0FD3/DWwa3uu6yo5texk/d3OqraKksLq3s4fXQIahuoy+25ctZVwYkhU57pcW+tRJc8Lbd3oEGELd7LAiEKD4IuxYhDRKMAAch4UCnYrlXaJodwn8KzpB4zxpXfzZQjkBo5sdCN8v8E8Mr5SQ7sunVK1RB3LUaPDPhwxKnpHskrOsr7W7T+N248qsmVa4bqxYc/3vhRKSCaQbz068R9/zmiUIl30uIfIajyUAVaFg2CPiMBF02dBIcIu3ERaS0FwNp0Ka1P9AwRQ60DQJPwhGIc9EMzHvD0mp3Cj6RfR2CNDOhixFNb6kkwUy1xI9dfkcMz01hKX649ZW7pygsrmqDUBzeM49bz3ypMgeObMbY45wz8uH0Bvv3l0ncLGn47e6cJpXk3fZ8CNgcoC717jA5lTbBdHNc4Khi7JqPOvz26fR7R+Wy8C0Ler1mcCuAuV3h7bOO5XatVKBvbkws/wUz14sEMiLiWwcMlo4NRegmRFuB3Hlr+QIWOKqLvcyH/8uZKD7nQcf3JRfjzoUjwChGRZ+SgwrTRK7yySFq+ObLWmJTg3YDT/usd6Mc42wfE+gX+LtUJ74OxkILQYtK8C2DqfLcKBBnz14eH1VvupwS4p9mJ4MXU88IQRzhY7wmA0jwVkJSYvA42hhecyAFNPIP0BsX/zCphrc+LZmUwKBHFyIr9wzfWbcfPx5SbuSekuIHAA6KktKDDKJqYHMDFfPnTYhmIdJpRVKnDqHUqBrBLgiT/JYhARL6l3znR2Wa4UmW66LjApEMWKpBw9oLSet/+dicJ71QhojTTmyftStaPnTwu8saE5i6PsrwTHgLzOuGPsmYPTo4Irownw7NuInR7zjsZA7VDd8MTIK845tJXmedWlsaB7qmHrvNCEBS6K4Sgozan2PHW2DreBN7PH0O4LQaCTJ3s6+LNN6q3E8hRDZMHKCeVJnWezeLjBiGayBKowuTcJBhZs8Tc42OEACAuKp7MeJmPkgAAAA="
-class="logo">
+  <div class="brand">
 
-<div>
-<b>MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA</b><br>
-<b>CUIT: 30718390326</b>
-</div>
+    <div class="shield">
+      ✦
+    </div>
+
+    <div class="gov">
+      <strong>
+        GOBIERNO<br>
+        DE LA PROVINCIA<br>
+        DEL NEUQUÉN
+      </strong>
+    </div>
+
+  </div>
+
+  <div class="ministry">
+
+    <strong>
+      MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA
+    </strong>
+
+    <br>
+
+    <strong>
+      CUIT: 30718390326
+    </strong>
+
+  </div>
 
 </header>
 
-<div class="rule"></div>
 
-<div class="top">
+<div class="top-rule"></div>
 
-<div class="box">
-<label>
-Fecha Emisión
-<input id="fecha" type="date">
-</label>
 
-<label>
-Número
-<input id="numero" type="text"> / 1
-</label>
+<div class="top-data">
+
+  <div class="date-box">
+
+    <div>
+      Fecha Emisión
+
+      <input
+        id="fecha"
+        class="date-input no-print"
+        type="date"
+      >
+
+      <span
+        id="fechaPrint"
+        class="print-only"
+      ></span>
+
+    </div>
+
+    <div>
+
+      Número
+
+      <input
+        id="numero"
+        class="tiny-input"
+        type="text"
+      >
+
+      <span> / 1</span>
+
+    </div>
+
+  </div>
+
+
+  <div class="stamp">
+
+    IMPUESTO DE SELLO EXENTO - NO REQUIERE INTERVENCION POR LA
+
+    <br>
+
+    DIRECCION PROVINCIAL DE RENTAS
+
+    <br>
+
+    RESOLUCION 530/DPR/11
+
+  </div>
+
 </div>
 
-<div class="seal">
-IMPUESTO DE SELLO EXENTO - NO REQUIERE INTERVENCION POR LA<br>
-DIRECCION PROVINCIAL DE RENTAS<br>
-RESOLUCION 530/DPR/11
-</div>
+
+<h1>
+  ORDEN DE COMPRA
+</h1>
+
+
+<div class="fields">
+
+  <div>
+    <b>Actuación Contable:</b>
+    <input>
+  </div>
+
+  <div>
+    <b>Exp. Electrónico:</b>
+    <input class="long">
+  </div>
+
+  <div>
+    <b>Contratación directa Nro.</b>
+    <input class="short">
+  </div>
+
+  <div>
+    <b>Señor Proveedor:</b>
+    <input
+      id="proveedor"
+      class="provider"
+    >
+  </div>
 
 </div>
 
-<h1>ORDEN DE COMPRA</h1>
 
-<div class="data">
+<p class="intro">
 
-<div>
-<b>Actuación Contable:</b>
-<input class="line">
-</div>
+  Sírvase entregar en los plazos y lugar de entrega especificados más abajo
+  los items que se detallan a continuación.
 
-<div>
-<b>Exp. Electrónico:</b>
-<input class="line wide">
-</div>
-
-<div>
-<b>Contratación directa Nro.</b>
-<input class="line short">
-</div>
-
-<div>
-<b>Señor Proveedor:</b>
-<input id="proveedor" class="line provider">
-</div>
-
-</div>
-
-<p>
-Sírvase entregar en los plazos y lugar de entrega especificados más abajo
-los items que se detallan a continuación.
 </p>
 
-<table class="grid main">
+
+<table class="oc-table">
 
 <colgroup>
-<col class="r">
-<col class="q">
-<col>
-<col class="p">
-<col class="u">
-<col class="t">
+
+  <col class="c-reng">
+  <col class="c-cant">
+  <col class="c-item">
+  <col class="c-per">
+  <col class="c-price">
+  <col class="c-total">
+
 </colgroup>
 
+
 <thead>
+
 <tr>
-<th>Reng.</th>
-<th>Cant.</th>
-<th>Item Solicitado</th>
-<th>Per.</th>
-<th>Precio Unitario</th>
-<th>Precio<br>Total</th>
+
+  <th>Reng.</th>
+
+  <th>Cant.</th>
+
+  <th>Item Solicitado</th>
+
+  <th>Per.</th>
+
+  <th>Precio Unitario</th>
+
+  <th>
+    Precio
+    <br>
+    Total
+  </th>
+
 </tr>
+
 </thead>
 
-<tbody id="rows"></tbody>
+
+<tbody id="renglones"></tbody>
+
 
 <tfoot>
-<tr>
-<td colspan="5" class="right">
-<b>Total:</b>
-</td>
 
-<td id="total">0,00</td>
+<tr>
+
+  <td
+    colspan="5"
+    class="right"
+  >
+    Total:
+  </td>
+
+  <td id="totalGeneral">
+    0,00
+  </td>
+
 </tr>
+
 </tfoot>
 
 </table>
 
+
 <div class="son">
 
-<b>Son:</b>
-<span id="words">cero pesos</span>
+  <div>
 
-<br>
+    <b>Son:</b>
 
-<b>Forma de Pago:</b>
-<input class="line pay" value="CUENTA CORRIENTE">
+    <span id="totalLetras">
+      cero pesos
+    </span>
+
+  </div>
+
+
+  <div>
+
+    <b>Forma de Pago:</b>
+
+    <input
+      value="CUENTA CORRIENTE"
+    >
+
+  </div>
+
+</div>
+
+
+<div class="transaccion">
+
+  <div>
+    Registrado bajo Transacción Contable:
+  </div>
+
+
+  <table>
+
+    <tr>
+
+      <th>Ejer</th>
+      <th>Juri</th>
+      <th>SA</th>
+      <th>Trans</th>
+      <th>Num</th>
+
+    </tr>
+
+
+    <tr>
+
+      <td>
+        <input>
+      </td>
+
+      <td>
+        <input>
+      </td>
+
+      <td>
+        <input>
+      </td>
+
+      <td>
+        <input>
+      </td>
+
+      <td>
+        <input>
+      </td>
+
+    </tr>
+
+  </table>
 
 </div>
 
-<div class="registered">
-
-Registrado bajo Transacción Contable:
-
-<table class="mini">
-
-<tr>
-<th>Ejer</th>
-<th>Juri</th>
-<th>SA</th>
-<th>Trans</th>
-<th>Num</th>
-</tr>
-
-<tr>
-<td><input></td>
-<td><input></td>
-<td><input></td>
-<td><input></td>
-<td><input></td>
-</tr>
-
-</table>
-
-</div>
 
 <div class="legal">
 
-Cualquier objeción a la presente Orden de Compra deberá efectuarse por escrito
-dentro de las 48 horas de su recepción. Esta Orden deberá ser cumplida
-íntegramente dentro del término establecido. Las mercaderías deberán entregarse
-con Remito duplicado, sin cuyo requisito no se conformará la factura. Las
-facturas en triplicado deberán presentarse dentro de los 30 (treinta) días de
-efectuarse el suministro. Para esta Provisión rigen las disposiciones contenidas
-en el Reglamento de Contrataciones, Anexo II del Decreto 2758/95,
-sus modificatorios y complementarios.
+Cualquier objeción a la presente Orden de Compra deberá efectuarse por escrito dentro de las 48 horas de su recepción.
+Esta Orden deberá ser cumplida íntegramente dentro del término establecido. Las mercaderías deberán entregarse con
+Remito duplicado, sin cuyo requisito no se conformará la factura. Las facturas en triplicado deberán presentarse dentro
+de los 30 (treinta) días de efectuarse el suministro. Para esta Provisión rigen las disposiciones contenidas en el
+Reglamento de Contrataciones, Anexo II del Decreto 2758/95, sus modificatorios y complementarios.
 
 </div>
 
-<div class="cron">
 
-<b>Cronograma de Entregas</b>
+<div class="cronograma">
 
-<table class="grid">
+  <div class="section-title">
+    Cronograma de Entregas
+  </div>
+
+
+  <table class="schedule-table">
+
+    <colgroup>
+
+      <col style="width:25%">
+      <col style="width:25%">
+      <col style="width:20%">
+      <col style="width:30%">
+
+    </colgroup>
+
+
+    <thead>
+
+      <tr>
+
+        <th>Renglon</th>
+
+        <th>Cantidad</th>
+
+        <th>Plazo de Entrega</th>
+
+        <th>Lugar de Entrega</th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody id="cronograma"></tbody>
+
+  </table>
+
+
+  <p class="cert">
+
+    El Proveedor no necesita ser validado según Art. 4° del Dto. 1394/14
+    Cert. cump. fiscal.
+
+  </p>
+
+
+  <div class="firmas">
+
+    <div>
+
+      ________________________<br>
+
+      Firma y aclaración de<br>
+      Proveedor
+
+    </div>
+
+
+    <div>
+
+      __/__/__<br>
+
+      Fecha de Notificación
+
+    </div>
+
+
+    <div>
+
+      ________________________<br>
+
+      Firma y Aclaración<br>
+      Funcionario Responsable
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+
+  SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
+
+  <span>
+    Página 1
+  </span>
+
+  <span class="fecha-pie"></span>
+
+</footer>
+
+</section>
+
+
+
+<!-- =====================================================
+     PAGINA 2 - PARTIDAS PRESUPUESTARIAS
+===================================================== -->
+
+<section class="page page-budget">
+
+<header class="doc-header">
+
+  <div class="brand">
+
+    <div class="shield">
+      ✦
+    </div>
+
+    <div class="gov">
+
+      <strong>
+        GOBIERNO<br>
+        DE LA PROVINCIA<br>
+        DEL NEUQUÉN
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="ministry">
+
+    <strong>
+      MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA
+    </strong>
+
+    <br>
+
+    <strong>
+      CUIT: 30718390326
+    </strong>
+
+  </div>
+
+</header>
+
+
+<div class="top-rule"></div>
+
+
+<div class="ann-top">
+
+  <div></div>
+
+  <div>
+
+    Fecha Emisión
+    <span class="fecha-pie"></span>
+
+    <br>
+
+    Número
+    <span class="numero-pie"></span>
+    / 1
+
+  </div>
+
+</div>
+
+
+<h2>
+  ORDEN DE COMPRA
+</h2>
+
+
+<h3>
+  Anexo de Partidas Presupuestarias para Compromiso
+</h3>
+
+
+<div class="fields budget-fields">
+
+  <div>
+
+    <b>Actuación Contable:</b>
+
+    <input>
+
+  </div>
+
+
+  <div>
+
+    <b>Contratación directa Nro.</b>
+
+    <input class="short">
+
+  </div>
+
+
+  <div>
+
+    <b>Norma legal de Adjudicación:</b>
+
+    <input value="Ley Nº2141">
+
+  </div>
+
+
+  <div>
+
+    <b>Fecha de Adjudicación:</b>
+
+    <input>
+
+  </div>
+
+
+  <div>
+
+    <b>Proveedor:</b>
+
+    <input class="provider sync-provider">
+
+  </div>
+
+</div>
+
+
+<table class="budget-table">
 
 <thead>
 
 <tr>
-<th>Renglon</th>
-<th>Cantidad</th>
-<th>Plazo de Entrega</th>
-<th>Lugar de Entrega</th>
+
+  <th>Ejer</th>
+  <th>Juri</th>
+  <th>SA</th>
+  <th>Unor</th>
+  <th>Cpn1</th>
+  <th>Cpn2</th>
+  <th>Cpn3</th>
+  <th>Fina</th>
+  <th>Func</th>
+  <th>SFunc</th>
+  <th>INC</th>
+  <th>Ppal</th>
+  <th>Ppar</th>
+  <th>Spar</th>
+  <th>Fufi</th>
+  <th>Ubge</th>
+  <th>Monto</th>
+
 </tr>
 
 </thead>
 
-<tbody id="schedule"></tbody>
+
+<tbody id="partidas"></tbody>
 
 </table>
 
-<p>
-<b>
-El Proveedor no necesita ser validado según Art. 4º del Dto. 1394/14
-Cert. cump. fiscal.
-</b>
-</p>
 
-<div class="sign">
+<div class="budget-total">
 
-<div>
-________________________<br>
-Firma y aclaración de<br>
-Proveedor
-</div>
+  <div>
 
-<div>
-__/__/__<br>
-Fecha de Notificación
-</div>
+    <b>
+      Total Compromiso ejercicio actual:
+    </b>
 
-<div>
-________________________<br>
-Firma y Aclaración<br>
-Funcionario Responsable
-</div>
+    <span id="compromisoActual">
+      0,00
+    </span>
 
-</div>
+  </div>
+
+
+  <div>
+
+    <b>
+      Total Compromisos ejercicios futuros:
+    </b>
+
+    <input>
+
+  </div>
 
 </div>
+
 
 <footer>
 
-SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
+  SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
 
-<span>Página 1</span>
+  <span>
+    Página 2
+  </span>
 
-<span id="printDate"></span>
+  <span class="fecha-pie"></span>
 
 </footer>
 
@@ -247,229 +632,40 @@ SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
 
 
 <!-- =====================================================
-     PÁGINA 2
+     PAGINAS DEL ANEXO SE GENERAN CON JAVASCRIPT
 ===================================================== -->
 
-<section class="page">
+<div id="detailPages"></div>
 
-<header class="head">
-
-<img
-src="data:image/webp;base64,UklGRkYLAABXRUJQVlA4IDoLAADwNQCdASosAV0APsFUo00npKMiKrXrWPAYCWcA18hCRyFi8LqlhcYnOb8qzkctfW/hH/sfNvvf+IGoF7F3fnZ/MC9m/vvgH6mvhf2AOCgoEeLlo2ewzPMt2C/ho4FCra340BR8OPuWCPWQT/3TT4hhCxajOXtOxHRXAqLN6EMnzy6BrSWUAXRe/CeE4QYUEvffEmOA8Gk6v4SpzU1oL3EwrGGKgKPnwOPaSta7TrsYk/7MNJ/9EoOf1+bUTFEvepSAWDmXOQP0XqqZNygVFXDj3n2ifCSFRW0ahcG61GG3JHrHQkLslSkBwXv85idJ2FvdUH3TjRqZ1IY8m+LqNtdlm3cI7JjBhi4K0syVWGUwc9KfxsZalXp1fZoEcsMc2k9b8Ec/3bjRubiPIgCUjc3SnkKK/z5m5LUQwzSCYBAVFr/41KBepSLlcYqEGvm36y29dSnv+v/MhC3i8iS1Qjsqi57mXu1In7TfI5laRa9GBEotdVNt0341NEtVfDo5OhLLC29ffbcz442ZzBkbG6nBPngIH9MHSOd6TjxqVLWqRfO+UIUWVHirh3ERBK8NAUfD0fc23k58AAD++KcqO3KxXTD2oj3HNWZPEutiAi/ww/uRT5ixFCKsdfpB7aFkpqp8qhayYBBW0nGB5JGVhSWfbqNhuKGhHZk28EAUHSRhHe54sLvfIF3Ipg42fYR0Vb+HWi84N0mg7Q2cDCmvP/nZvNAHZw6rjb+wVYgFsEx149ypbIeJnYOHorHuhJrrSzB6LApjmLjd9Jqk7pkoFpBYaHZnmTecIgD520Yi6/zWFWSdD5izCregaikMRHxWpGhO/7PcF3LrDs3c+NlFosdNC9mIG90qobHdIgF7uwTAz3kPVJ5u732vmQwzXU92VFtA3tlcsnsfIC4jvBiEROkLhQgMj+YvHrnvSDpbkD7dM89k0Keb/m3nr8jyby9UjQJi523UTi0bJWVfnHZqcT5w6B6WbgLHpq6VqmKsq9r8k/T21iS+Z7bQ65g7M6YzPhuO8aIgWS/58c0ewjoTBptGSQHfXklCP13lkEMyu8x/UvbntS6Ny1vn0KxLmVKIBunEUYbqsN8tB0143NkgczF9gnLLToSkYYJX6ox47XFZi3Q8poIOK9V7GH6myTTUl1/Ycm2QuhUVwEkcmmxeUHmhwPwyg9I96le7Z17TumU+PJ47a49DX1kjHM9q4azYcw0lLto+74zYDwpUfn6UsPDT7k/NJhGwq0yYBlQdkrEhu6uabuLJ6GGKMe5eCKvT10MXY+OaPzuXytHAdd1O85veZamrbAC42exqr+WCXLrXd6d0M8SKh4wbGQNsKXoBeJv1/EyiHwqL+CU352YW9uAXFIkicooslyLixFtbIV4jhRrDMeqCsB9aRmht1XtpSrfGJz/YHXDIRUHr0xsDN4kSe+I0qt1hoJlHRr+dExI6r+c9vALMOhQuZ0Oiw9Lx7JVjAu+EIn5cGy+P/iHYdNsqPuXilQb9EWRFO0pAYbmvaOdbHwah3tHitNDRs0uN7nAnQv5CJXhbLrgxnyDS6MySyh3EPmhsRzXWcwltUSiR1SyrgzW/nJ+mDYNlV0Tcg/spS8HnFlYdfPPfFTmGTym0GX426KW5fIxC8M9kjRkyoNtuEcNmDUhAzgxqviPCZFsZzjN+eK5jWsP/lBiw8z98t662U9EdV0t6D4oJXi5v6Rqvduxigu2qCh9TvaIJGXL6/eLjuILO3bvn5McRpE+lemvBeDm42oMP3ggF7HlSuJ4pAsMiD6K/ffOPhRGOhSDV5d81yxw/+F++k4PXWD802DHRL/o/VRbK/MVkjFoJbu4rOq2nOxfh7xb+MjTK6XkHkC0wKialnyUqlAwKmNRLoflNvGvQSykei9prf0NUycSueC2KnER5Nj6Gd3h/rl6ZqQs5JOxAEdWk6MxZCNBEurzeFtIfSZfNTfKAW2a92noYA0sUrzYhDAzQnGKZAMQ5C2kuFmBUQgEZnmF2+WdpikA/dHLJqlgi6L2BZNQFW69ROPCr9eemDjnnBTPgDy4Dnn5n+icOwkf35mX0jXkhLst766/cA3BJHiVMtUcFG6OlyZzv6QipD2gSg5UvseMpo4b7RruE4o9tRgSR7z4wQf6XbXP7lMbazqcxhMaolkgBoYLPodf6jPnf8BgR1dbqJUvTim1MUzKiXWaItKXKlBZAgaJCWPD+Qsn6YTVLYUiWVDQ9xzk+Hv+Jnf0tedE0niPAlb8G71saPoI1E+tjSgNjw9c5rNcarkHg0q1+oXe7mpOl5RP6RBd1rqJJrqDo3s74v+8Gnu32Lo2lQLSRgchHmku3mvTTlw8ZMJc/oOZFG9RCdQILaioHSfhWL0s/koNdWMOi1/j2UfWAiyY3MsHT0d+L4GKJDB8Ob/NaiVOSyrMIdQ0LgxrfLDXYLiNi6So/vzMpUsTPjfPSOPmyE9WK47ejCqHmOslHr7oV7GjO8XOFsmkMr8XUL+ok8tKw59JL5hV9m5Cm2EDxYE48hylX/5fNpo4MfdRnULVygFxvT/9pLpvsS/6SijaRlC1n952aSPpZYmWDDQkKkxUdq9ltePXc8YxYe/6m+3k0+HVpE4FfNeeTUS+76UdRyhlue4boeimkVOtxkTBwCfwGf/BbkvD58xVB1pToxSKLfJ0DNZZPIMxh4G3Wi7zfHStx/xRkjZmJV0+PJB6Ba2hKD6jY1GoMjvhJFpYAKYDvRf3YGkC9VvjWFD+fxxfcHq50yRYEO9TJQToE7NyZ2+tEotqMm3TqUsWqm0vg3UWDQ2f1Crm5gpKDxRmAy/11v2MwKgkJu6rlB39W9A8x6i0FD3/DWwa3uu6yo5texk/d3OqraKksLq3s4fXQIahuoy+25ctZVwYkhU57pcW+tRJc8Lbd3oEGELd7LAiEKD4IuxYhDRKMAAch4UCnYrlXaJodwn8KzpB4zxpXfzZQjkBo5sdCN8v8E8Mr5SQ7sunVK1RB3LUaPDPhwxKnpHskrOsr7W7T+N248qsmVa4bqxYc/3vhRKSCaQbz068R9/zmiUIl30uIfIajyUAVaFg2CPiMBF02dBIcIu3ERaS0FwNp0Ka1P9AwRQ60DQJPwhGIc9EMzHvD0mp3Cj6RfR2CNDOhixFNb6kkwUy1xI9dfkcMz01hKX649ZW7pygsrmqDUBzeM49bz3ypMgeObMbY45wz8uH0Bvv3l0ncLGn47e6cJpXk3fZ8CNgcoC717jA5lTbBdHNc4Khi7JqPOvz26fR7R+Wy8C0Ler1mcCuAuV3h7bOO5XatVKBvbkws/wUz14sEMiLiWwcMlo4NRegmRFuB3Hlr+QIWOKqLvcyH/8uZKD7nQcf3JRfjzoUjwChGRZ+SgwrTRK7yySFq+ObLWmJTg3YDT/usd6Mc42wfE+gX+LtUJ74OxkILQYtK8C2DqfLcKBBnz14eH1VvupwS4p9mJ4MXU88IQRzhY7wmA0jwVkJSYvA42hhecyAFNPIP0BsX/zCphrc+LZmUwKBHFyIr9wzfWbcfPx5SbuSekuIHAA6KktKDDKJqYHMDFfPnTYhmIdJpRVKnDqHUqBrBLgiT/JYhARL6l3znR2Wa4UmW66LjApEMWKpBw9oLSet/+dicJ71QhojTTmyftStaPnTwu8saE5i6PsrwTHgLzOuGPsmYPTo4Irownw7NuInR7zjsZA7VDd8MTIK845tJXmedWlsaB7qmHrvNCEBS6K4Sgozan2PHW2DreBN7PH0O4LQaCTJ3s6+LNN6q3E8hRDZMHKCeVJnWezeLjBiGayBKowuTcJBhZs8Tc42OEACAuKp7MeJmPkgAAAA="
-class="logo">
-
-<div>
-<b>MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA</b><br>
-<b>CUIT: 30718390326</b>
-</div>
-
-</header>
-
-<div class="rule"></div>
-
-<div class="annhead">
-
-<div></div>
-
-<div>
-Fecha Emisión <span id="annDate"></span><br>
-Número <span id="annNum"></span> / 1
-</div>
 
 </div>
-
-<h2>ORDEN DE COMPRA</h2>
-
-<h3>Anexo de Partidas Presupuestarias para Compromiso</h3>
-
-<div class="data">
-
-<div>
-<b>Actuación Contable:</b>
-<input class="line">
-</div>
-
-<div>
-<b>Contratación directa Nro.</b>
-<input class="line short">
-</div>
-
-<div>
-<b>Norma legal de Adjudicación:</b>
-<input class="line" value="Ley Nº2141">
-</div>
-
-<div>
-<b>Fecha de Adjudicación:</b>
-<input class="line">
-</div>
-
-<div>
-<b>Proveedor:</b>
-<input class="line provider syncProv">
-</div>
-
-</div>
-
-<table class="grid budget">
-
-<thead>
-
-<tr>
-<th>Ejer</th>
-<th>Juri</th>
-<th>SA</th>
-<th>Unor</th>
-<th>Cpn1</th>
-<th>Cpn2</th>
-<th>Cpn3</th>
-<th>Fina</th>
-<th>Func</th>
-<th>SFunc</th>
-<th>INC</th>
-<th>Ppal</th>
-<th>Ppar</th>
-<th>Spar</th>
-<th>Fufi</th>
-<th>Ubge</th>
-<th>Monto</th>
-</tr>
-
-</thead>
-
-<tbody id="parts"></tbody>
-
-</table>
-
-<div class="no-print part-controls">
-<button id="addPart2">+ Agregar partida</button>
-</div>
-
-<div class="commit">
-
-<b>Total Compromiso ejercicio actual:</b>
-<span id="commitTotal">0,00</span>
-
-<br>
-
-<b>Total Compromisos ejercicios futuros:</b>
-<input class="line">
-
-</div>
-
-<footer>
-
-SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
-
-<span>Página 2</span>
-
-<span class="footDate"></span>
-
-</footer>
-
-</section>
 
 
 <!-- =====================================================
-     PÁGINA 3
+     BOTON FINAL
 ===================================================== -->
 
-<section class="page">
+<div class="download-bar no-print">
 
-<header class="head">
+  <button
+    id="btnPDF"
+    type="button"
+  >
 
-<img
-src="data:image/webp;base64,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"
-class="logo">
+    ↓&nbsp; DESCARGAR COMO PDF
 
-<div>
-<b>MINISTERIO DE JUVENTUD, DEPORTE Y CULTURA</b><br>
-<b>CUIT: 30718390326</b>
-</div>
+  </button>
 
-</header>
 
-<div class="rule"></div>
+  <span>
 
-<div class="annhead">
+    Se abrirá la impresión del navegador.
+    Elegí “Guardar como PDF”.
 
-<div></div>
-
-<div>
-Fecha Emisión <span id="detDate"></span><br>
-Número <span id="detNum"></span> / 1
-</div>
+  </span>
 
 </div>
 
-<h2>ORDEN DE COMPRA</h2>
-
-<h3>Anexo</h3>
-
-<div class="data">
-
-<div>
-<b>Actuación Contable:</b>
-<input class="line">
-</div>
-
-<div>
-<b>Contratación directa Nro.</b>
-<input class="line short">
-</div>
-
-<div>
-<b>Norma legal de Adjudicación:</b>
-<input class="line" value="Ley Nº2141">
-</div>
-
-<div>
-<b>Proveedor:</b>
-<input class="line provider syncProv">
-</div>
-
-</div>
-
-<table class="grid detail">
-
-<thead>
-
-<tr>
-<th>Renglon</th>
-<th>Item Solicitado</th>
-</tr>
-
-</thead>
-
-<tbody id="details"></tbody>
-
-</table>
-
-<footer>
-
-SAFIPRO - Sistema de Contrataciones de la Provincia del Neuquén
-
-<span>Página 3</span>
-
-<span class="footDate"></span>
-
-</footer>
-
-</section>
-
-</main>
-
-<div class="download no-print">
-
-<button id="pdf">
-↓ &nbsp; DESCARGAR / GUARDAR COMO PDF
-</button>
-
-<small>
-Se abrirá la impresión del navegador. Elegí «Guardar como PDF».
-</small>
-
-</div>
 
 <script src="script.js"></script>
 
