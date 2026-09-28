@@ -1,140 +1,122 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Orden de Compra</title>
+    <title>Orden de Compra | Neuquén</title>
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Librería para generar PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
 </head>
 
 <body>
 
 <div class="app">
 
-    <header class="app-header">
-        <div>
-            <h1>ORDEN DE COMPRA</h1>
-            <p>Ministerio de Juventud, Deportes y Cultura</p>
-            <span>Provincia del Neuquén</span>
-        </div>
+    <header class="encabezado-app">
+        <h1>ORDEN DE COMPRA</h1>
+        <p>Ministerio de Juventud, Deportes y Cultura</p>
+        <span>Provincia del Neuquén</span>
     </header>
 
-    <main>
 
-        <!-- DATOS GENERALES -->
+    <section class="panel">
 
-        <section class="panel">
+        <h2>Datos generales</h2>
 
-            <h2>Datos de la Orden</h2>
+        <div class="datos-grid">
 
-            <div class="form-grid">
-
-                <div class="campo">
-                    <label>N° Orden de Compra</label>
-                    <input type="text" id="numeroOrden" placeholder="Ej: 1234/1">
-                </div>
-
-                <div class="campo">
-                    <label>Fecha</label>
-                    <input type="date" id="fechaOrden">
-                </div>
-
-                <div class="campo">
-                    <label>Expediente</label>
-                    <input type="text" id="expediente" placeholder="EX-2026-XXXXXXXX-NEU-...">
-                </div>
-
-                <div class="campo">
-                    <label>Proveedor</label>
-                    <input type="text" id="proveedor" placeholder="Nombre del proveedor">
-                </div>
-
-                <div class="campo">
-                    <label>CUIT</label>
-                    <input type="text" id="cuit" placeholder="20-XXXXXXXX-X">
-                </div>
-
-                <div class="campo">
-                    <label>Destino</label>
-                    <input type="text" id="destino" placeholder="Lugar de entrega">
-                </div>
-
+            <div>
+                <label>N° Orden de Compra</label>
+                <input id="numeroOrden" type="text">
             </div>
 
-        </section>
-
-
-        <!-- RENGLONES -->
-
-        <section class="panel">
-
-            <div class="section-title">
-
-                <div>
-                    <h2>Renglones</h2>
-                    <p>Agregá todos los renglones que necesites.</p>
-                </div>
-
-                <button type="button" id="agregarRenglon" class="btn-primary">
-                    + Agregar renglón
-                </button>
-
+            <div>
+                <label>Fecha</label>
+                <input id="fechaOrden" type="date">
             </div>
 
+            <div>
+                <label>Expediente</label>
+                <input id="expediente" type="text">
+            </div>
 
-            <div id="renglones"></div>
+            <div>
+                <label>Proveedor</label>
+                <input id="proveedor" type="text">
+            </div>
 
-        </section>
+            <div>
+                <label>CUIT</label>
+                <input id="cuit" type="text">
+            </div>
+
+            <div>
+                <label>Destino</label>
+                <input id="destino" type="text">
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- OBSERVACIONES -->
+    <section class="panel">
 
-        <section class="panel">
+        <div class="titulo-renglones">
 
-            <h2>Observaciones</h2>
+            <div>
+                <h2>Renglones</h2>
+                <p>La orden comienza con un renglón y podés agregar todos los necesarios.</p>
+            </div>
 
-            <textarea
-                id="observaciones"
-                rows="4"
-                placeholder="Observaciones, condiciones de entrega u otra información..."></textarea>
-
-        </section>
-
-
-        <!-- BOTONES -->
-
-        <div class="acciones">
-
-            <button type="button" id="vistaPrevia" class="btn-secondary">
-                👁 Vista previa
-            </button>
-
-            <button type="button" id="descargarPDF" class="btn-pdf">
-                📄 Descargar PDF
+            <button id="btnAgregar" class="btn-agregar">
+                + Agregar renglón
             </button>
 
         </div>
 
+        <div id="listaRenglones"></div>
 
-        <!-- PREVISUALIZACIÓN -->
+    </section>
 
-        <section id="previewContainer" class="preview-container">
 
-            <div id="documentoPDF" class="documento">
+    <section class="panel">
 
-                <!-- El documento se genera mediante JavaScript -->
+        <h2>Observaciones</h2>
 
-            </div>
+        <textarea
+            id="observaciones"
+            rows="4"
+            placeholder="Observaciones..."></textarea>
 
-        </section>
+    </section>
 
-    </main>
+
+    <div class="botones">
+
+        <button id="btnVistaPrevia" class="btn-vista">
+            👁 Vista previa
+        </button>
+
+        <button id="btnPDF" class="btn-pdf">
+            📄 Descargar PDF
+        </button>
+
+    </div>
+
+
+    <section id="zonaPreview" class="zona-preview">
+
+        <h2>Vista previa</h2>
+
+        <div id="documentoPDF"></div>
+
+    </section>
 
 </div>
 
@@ -143,4 +125,3 @@
 
 </body>
 </html>
-```
