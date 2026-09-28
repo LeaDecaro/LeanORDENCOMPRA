@@ -1,1310 +1,537 @@
-/* =========================================================
-   CONFIGURACIÓN GENERAL
-========================================================= */
+*{
+box-sizing:border-box
+}
 
-* {
-    box-sizing: border-box;
+html,body{
+margin:0;
+background:#e7e7e7;
+color:#111;
+font-family:"Courier New",monospace;
+font-size:9px
+}
+
+body{
+padding-bottom:35px
+}
+
+.toolbar{
+width:210mm;
+margin:10px auto 0;
+padding:8px;
+background:#fff;
+border:1px solid #bbb;
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-family:Arial,sans-serif
+}
+
+.toolbar button,
+.part-controls button{
+margin-left:5px;
+padding:6px 10px;
+border:1px solid #777;
+background:#f5f5f5;
+border-radius:3px;
+cursor:pointer
+}
+
+.page{
+position:relative;
+width:210mm;
+height:297mm;
+margin:0 auto 16px;
+padding:7mm 8mm 14mm;
+background:#fff;
+box-shadow:0 1px 8px #aaa;
+overflow:hidden
+}
+
+.head{
+height:18mm;
+display:grid;
+grid-template-columns:65% 35%;
+align-items:start
+}
+
+.logo{
+width:58mm;
+max-height:16mm;
+object-fit:contain;
+object-position:left center
+}
+
+.head>div:last-child{
+padding:1mm 0 0 3mm;
+font-size:8px;
+line-height:1.4
+}
+
+.rule{
+border-top:.6px solid #111;
+margin-bottom:3mm
+}
+
+.top{
+display:grid;
+grid-template-columns:66% 34%;
+margin-bottom:3mm
+}
+
+.box{
+border:.5px solid #111;
+width:61mm;
+padding:1.5mm;
+font-size:8px;
+line-height:1.6
+}
+
+.box label{
+display:block
+}
+
+.box input{
+font:inherit;
+background:transparent;
+border:0;
+border-bottom:.5px solid #333;
+outline:0
+}
+
+.box input[type=date]{
+width:30mm
+}
+
+.box input[type=text]{
+width:21mm
+}
+
+.seal{
+border:.5px solid #111;
+padding:1.5mm;
+font-size:7px;
+font-weight:bold;
+line-height:1.25
+}
+
+h1{
+text-align:center;
+font-size:13px;
+margin:1mm 0 4mm
+}
+
+h2{
+text-align:center;
+font-size:11px;
+margin:2mm 0 2mm
+}
+
+h3{
+text-align:center;
+font-size:10px;
+margin:0 0 4mm
+}
+
+.data{
+font-size:8px;
+line-height:1.55
+}
+
+.data>div{
+margin-bottom:.5mm
+}
+
+.line{
+font:inherit;
+background:transparent;
+border:0;
+border-bottom:.5px solid #333;
+outline:0;
+height:4mm;
+padding:0 1mm;
+min-width:25mm
+}
+
+.wide{
+width:83mm
+}
+
+.short{
+width:24mm
+}
+
+.provider{
+width:82mm
+}
+
+.pay{
+width:42mm
+}
+
+p{
+font-size:8px;
+line-height:1.25
+}
+
+.grid{
+width:100%;
+border-collapse:collapse;
+table-layout:fixed
+}
+
+.grid th,
+.grid td{
+border:.5px solid #111
+}
+
+.grid th{
+background:#c9c9c9;
+text-align:center;
+font-weight:bold
+}
+
+.main{
+font-size:7.5px
+}
+
+.main th{
+height:8mm
+}
+
+.main .r{
+width:10mm
+}
+
+.main .q{
+width:14mm
+}
+
+.main .p{
+width:10mm
+}
+
+.main .u{
+width:31mm
+}
+
+.main .t{
+width:31mm
+}
+
+.main td{
+vertical-align:top;
+padding:1mm
+}
+
+.main input,
+.main textarea{
+width:100%;
+font:inherit;
+border:0;
+outline:0;
+background:transparent
+}
+
+.desc{
+min-height:13mm;
+resize:none;
+line-height:1.2
+}
+
+.qty,
+.period{
+text-align:center
+}
+
+.price,
+.rowtotal{
+text-align:right
+}
+
+.rowtotal{
+font-weight:bold
+}
+
+.right{
+text-align:right;
+padding-right:2mm
+}
+
+.son{
+font-size:8px;
+line-height:1.7;
+margin-top:2mm
+}
+
+.registered{
+font-size:7.5px;
+margin-top:1mm
+}
+
+.mini{
+border-collapse:collapse;
+margin-top:1mm
+}
+
+.mini th,
+.mini td{
+border:.5px solid #111;
+padding:1mm 4mm;
+text-align:center
+}
+
+.mini th{
+background:#c9c9c9
+}
+
+.mini input{
+width:10mm;
+border:0;
+outline:0;
+text-align:center;
+background:transparent
+}
+
+.legal{
+font-size:7.5px;
+line-height:1.25;
+margin-top:2mm;
+text-align:justify
+}
+
+.cron{
+margin-top:2.5mm;
+font-size:8px
+}
+
+.cron>b{
+display:block;
+margin-bottom:1mm
+}
+
+.cron th{
+height:8mm
+}
+
+.cron td{
+height:8mm;
+padding:1mm
+}
+
+.cron input,
+.cron textarea{
+width:100%;
+font:inherit;
+font-size:8px;
+background:transparent;
+border:0;
+outline:0
+}
+
+.cron textarea{
+resize:none
+}
+
+.sign{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+text-align:center;
+margin-top:8mm;
+font-size:8px
+}
+
+.annhead{
+display:grid;
+grid-template-columns:1fr auto;
+font-size:8px;
+margin-bottom:1mm
+}
+
+.budget{
+font-size:5.8px
+}
+
+.budget th{
+height:8mm;
+padding:.5mm
+}
+
+.budget td{
+height:7mm;
+padding:.5mm;
+text-align:center
+}
+
+.budget input{
+width:100%;
+border:0;
+outline:0;
+background:transparent;
+font:inherit;
+font-size:5.8px;
+text-align:center
+}
+
+.budget th:last-child,
+.budget td:last-child{
+width:29mm
+}
+
+.commit{
+border:.5px solid #111;
+width:70%;
+margin-top:3mm;
+padding:1.5mm;
+font-size:8px;
+line-height:1.8
+}
+
+.detail th{
+height:8mm;
+text-align:left
+}
+
+.detail th:first-child{
+width:16mm;
+text-align:center
+}
+
+.detail td{
+vertical-align:top;
+padding:1mm
+}
+
+.detail textarea{
+width:100%;
+min-height:45mm;
+resize:vertical;
+border:0;
+outline:0;
+background:transparent;
+font:inherit;
+font-size:8px;
+line-height:1.3
+}
+
+footer{
+position:absolute;
+left:8mm;
+right:8mm;
+bottom:4mm;
+border-top:.5px solid #111;
+padding-top:1.5mm;
+font-size:6.5px;
+display:flex;
+justify-content:space-between
+}
+
+.download{
+width:210mm;
+margin:20px auto;
+text-align:center;
+font-family:Arial
+}
+
+.download button{
+display:block;
+margin:auto;
+padding:12px 26px;
+border:0;
+border-radius:5px;
+background:#21643e;
+color:white;
+font-weight:bold;
+font-size:13px;
+cursor:pointer
+}
+
+.download small{
+display:block;
+margin-top:7px;
+color:#555
+}
+
+@media(max-width:850px){
+
+.toolbar,
+.page,
+.download{
+width:100%
+}
+
+.toolbar{
+display:block
+}
+
+.toolbar button{
+margin-top:5px
+}
+
+.page{
+overflow:auto
+}
+
+}
+
+@media print{
+
+@page{
+size:A4 portrait;
+margin:0
 }
 
 html,
-body {
-    margin: 0;
-    padding: 0;
+body{
+background:#fff!important;
+padding:0!important;
+margin:0!important
 }
 
-body {
-
-    background: #e4e4e4;
-
-    color: #111;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 10px;
-
-    padding-bottom: 50px;
-}
-
-
-/* =========================================================
-   HOJA A4
-========================================================= */
-
-.hoja {
-
-    position: relative;
-
-    width: 210mm;
-
-    min-height: 297mm;
-
-    margin: 20px auto;
-
-    padding:
-        10mm
-        10mm
-        17mm
-        10mm;
-
-    background: white;
-
-    box-shadow:
-        0 2px 12px rgba(0,0,0,.20);
-
-    overflow: hidden;
-
-}
-
-
-/* =========================================================
-   ENCABEZADO
-========================================================= */
-
-.encabezado {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    width: 100%;
-
-    min-height: 17mm;
-
-}
-
-
-.gobierno {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 5px;
-
-}
-
-
-.escudo {
-
-    width: 25px;
-
-    height: 31px;
-
-    border: 1px solid #b9b9b9;
-
-    border-radius:
-        45% 45% 50% 50%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    color: #aeb7c2;
-
-    font-size: 14px;
-
-}
-
-
-.gobierno-grande {
-
-    font-size: 8px;
-
-    line-height: 1.25;
-
-    font-weight: bold;
-
-    color: #4c5963;
-
-}
-
-
-.ministerio {
-
-    text-align: right;
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    font-size: 7px;
-
-    font-weight: bold;
-
-    line-height: 1.35;
-
-}
-
-
-/* =========================================================
-   DATOS SUPERIORES
-========================================================= */
-
-.datos-superiores {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    margin-top: 2px;
-
-}
-
-
-.fecha-numero {
-
-    width: 32%;
-
-    border: 1px solid #222;
-
-    padding: 4px 5px;
-
-    line-height: 1.8;
-
-    font-size: 8px;
-
-}
-
-
-.campo-underline {
-
-    border: none;
-
-    border-bottom: 1px solid #333;
-
-    outline: none;
-
-    background: transparent;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 8px;
-
-}
-
-
-.fecha {
-
-    width: 30mm;
-
-}
-
-
-.numero {
-
-    width: 22mm;
-
-}
-
-
-.sello {
-
-    width: 43%;
-
-    border: 1px solid #222;
-
-    padding: 3px;
-
-    text-align: center;
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    font-size: 7px;
-
-    line-height: 1.15;
-
-}
-
-
-/* =========================================================
-   TÍTULOS
-========================================================= */
-
-.titulo-documento {
-
-    text-align: center;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    margin-top: 10px;
-
-    margin-bottom: 8px;
-
-}
-
-
-.titulo-seccion {
-
-    font-size: 11px;
-
-    font-weight: bold;
-
-    margin-top: 8px;
-
-    margin-bottom: 5px;
-
-    text-align: left;
-
-}
-
-
-.titulo-seccion.grande {
-
-    text-align: center;
-
-    font-size: 14px;
-
-    margin-top: 15px;
-
-}
-
-
-/* =========================================================
-   DATOS
-========================================================= */
-
-.datos-orden {
-
-    font-size: 8px;
-
-}
-
-
-.fila-dato {
-
-    display: flex;
-
-    align-items: baseline;
-
-    flex-wrap: wrap;
-
-    gap: 3px;
-
-    margin-bottom: 4px;
-
-    line-height: 1.4;
-
-}
-
-
-.campo-linea {
-
-    border: none;
-
-    border-bottom: 1px solid #333;
-
-    outline: none;
-
-    background: transparent;
-
-    height: 15px;
-
-    padding: 0 2px;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 8px;
-
-}
-
-
-.campo-linea:focus {
-
-    background: #fffde7;
-
-    border-bottom: 1px solid #111;
-
-}
-
-
-.largo {
-    width: 45mm;
-}
-
-
-.extra-largo {
-    width: 57mm;
-}
-
-
-.mediano {
-    width: 28mm;
-}
-
-
-.proveedor {
-    width: 75mm;
-}
-
-
-.forma-pago {
-    width: 50mm;
-}
-
-
-.texto-entrega {
-
-    margin-top: 6px;
-
-    margin-bottom: 7px;
-
-    font-size: 8px;
-
-}
-
-
-/* =========================================================
-   TABLA DE RENGLONES
-========================================================= */
-
-.tabla-contenedor {
-
-    width: 100%;
-
-}
-
-
-.tabla-renglones {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    table-layout: fixed;
-
-    font-size: 7.5px;
-
-}
-
-
-.tabla-renglones th,
-.tabla-renglones td {
-
-    border: 1px solid #111;
-
-    padding: 2px;
-
-    vertical-align: top;
-
-}
-
-
-.tabla-renglones th {
-
-    text-align: center;
-
-    font-weight: bold;
-
-    height: 24px;
-
-}
-
-
-.col-reng {
-    width: 10mm;
-}
-
-
-.col-cantidad {
-    width: 12mm;
-}
-
-
-.col-item {
-    width: auto;
-}
-
-
-.col-periodo {
-    width: 10mm;
-}
-
-
-.col-precio {
-    width: 26mm;
-}
-
-
-.col-total {
-    width: 27mm;
-}
-
-
-.celda-total {
-
-    text-align: right;
-
-    font-weight: bold;
-
-    height: 20px;
-
-}
-
-
-.total-general {
-
-    text-align: right;
-
-    font-weight: bold;
-
-}
-
-
-/* =========================================================
-   CAMPOS DE LOS RENGLONES
-========================================================= */
-
-.renglon-numero {
-
-    text-align: center;
-
-    font-weight: bold;
-
-}
-
-
-.campo-cantidad {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    background: transparent;
-
-    text-align: center;
-
-    font-size: 8px;
-
-}
-
-
-.campo-periodo {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    background: transparent;
-
-    text-align: center;
-
-    font-size: 8px;
-
-}
-
-
-.campo-precio {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    background: transparent;
-
-    text-align: right;
-
-    font-size: 8px;
-
-}
-
-
-.campo-total {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    background: transparent;
-
-    text-align: right;
-
-    font-size: 8px;
-
-    font-weight: bold;
-
-}
-
-
-.descripcion {
-
-    width: 100%;
-
-    min-height: 42px;
-
-    border: none;
-
-    outline: none;
-
-    resize: vertical;
-
-    background: transparent;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 8px;
-
-    line-height: 1.25;
-
-}
-
-
-.marca {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    border-top: 1px dotted #aaa;
-
-    background: transparent;
-
-    font-size: 7px;
-
-}
-
-
-.descripcion:focus,
-.marca:focus,
-.campo-cantidad:focus,
-.campo-periodo:focus,
-.campo-precio:focus {
-
-    background: #fffde7;
-
-}
-
-
-/* =========================================================
-   BOTONES DE RENGLONES
-========================================================= */
-
-.controles-renglones {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 7px;
-
-    margin-top: 7px;
-
-    margin-bottom: 7px;
-
-}
-
-
-.boton-secundario {
-
-    border: 1px solid #777;
-
-    background: #f4f4f4;
-
-    color: #222;
-
-    padding: 5px 12px;
-
-    border-radius: 3px;
-
-    font-size: 8px;
-
-    cursor: pointer;
-
-}
-
-
-.boton-secundario:hover {
-
-    background: #dedede;
-
-}
-
-
-.boton-quitar:hover {
-
-    background: #f1dddd;
-
-}
-
-
-/* =========================================================
-   TOTAL EN LETRAS
-========================================================= */
-
-.total-letras {
-
-    margin-top: 5px;
-
-}
-
-
-#totalLetras {
-
-    font-weight: bold;
-
-    text-transform: lowercase;
-
-}
-
-
-/* =========================================================
-   TEXTO LEGAL
-========================================================= */
-
-.texto-legal {
-
-    margin-top: 7px;
-
-    font-size: 7.3px;
-
-    line-height: 1.35;
-
-    text-align: justify;
-
-}
-
-
-/* =========================================================
-   CRONOGRAMA
-========================================================= */
-
-.tabla-entregas {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    table-layout: fixed;
-
-    font-size: 7.5px;
-
-}
-
-
-.tabla-entregas th,
-.tabla-entregas td {
-
-    border: 1px solid #111;
-
-    padding: 3px;
-
-    vertical-align: top;
-
-}
-
-
-.tabla-entregas th {
-
-    text-align: center;
-
-    background: #d0d0d0;
-
-    font-weight: bold;
-
-}
-
-
-.tabla-entregas th:nth-child(1) {
-    width: 20mm;
-}
-
-
-.tabla-entregas th:nth-child(2) {
-    width: 25mm;
-}
-
-
-.tabla-entregas th:nth-child(3) {
-    width: 30mm;
-}
-
-
-.tabla-entregas th:nth-child(4) {
-    width: auto;
-}
-
-
-.campo-entrega {
-
-    width: 100%;
-
-    min-height: 25px;
-
-    border: none;
-
-    outline: none;
-
-    resize: vertical;
-
-    font-size: 7.5px;
-
-    background: transparent;
-
-}
-
-
-.campo-plazo {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    font-size: 7.5px;
-
-    background: transparent;
-
-}
-
-
-.nota-fiscal {
-
-    margin-top: 5px;
-
-    font-size: 7px;
-
-}
-
-
-.bloque-nota {
-
-    margin-top: 15px;
-
-    font-size: 8px;
-
-}
-
-
-/* =========================================================
-   FIRMAS
-========================================================= */
-
-.firmas {
-
-    display: flex;
-
-    justify-content: space-around;
-
-    align-items: flex-end;
-
-    text-align: center;
-
-    margin-top: 17px;
-
-    font-size: 7.5px;
-
-}
-
-
-.firma {
-
-    width: 28%;
-
-}
-
-
-.linea-firma {
-
-    border-top: 1px solid #111;
-
-    width: 45mm;
-
-    margin: 0 auto 4px;
-
-}
-
-
-.linea-fecha {
-
-    margin-bottom: 5px;
-
-}
-
-
-.firmas-pagina2 {
-
-    margin-top: 60px;
-
-}
-
-
-/* =========================================================
-   PIE DE PÁGINA
-========================================================= */
-
-.pie-pagina {
-
-    position: absolute;
-
-    left: 10mm;
-
-    right: 10mm;
-
-    bottom: 6mm;
-
-    border-top: 1px solid #222;
-
-    padding-top: 3px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    font-size: 6.5px;
-
-}
-
-
-/* =========================================================
-   LÍNEA
-========================================================= */
-
-.linea-separadora {
-
-    height: 1px;
-
-    background: #111;
-
-    margin-top: 3px;
-
-}
-
-
-/* =========================================================
-   ANEXO
-========================================================= */
-
-.anexo-numero {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    font-size: 8px;
-
-    margin-bottom: 8px;
-
-}
-
-
-.anexo-palabra {
-
-    text-align: center;
-
-    font-size: 10px;
-
-    font-weight: bold;
-
-    margin: 6px;
-
-}
-
-
-/* =========================================================
-   TABLA PRESUPUESTARIA
-========================================================= */
-
-.tabla-presupuesto-contenedor {
-
-    width: 100%;
-
-    overflow: hidden;
-
-}
-
-
-.tabla-presupuesto {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    table-layout: fixed;
-
-    font-size: 6px;
-
-}
-
-
-.tabla-presupuesto th,
-.tabla-presupuesto td {
-
-    border: 1px solid #111;
-
-    text-align: center;
-
-    padding: 2px 1px;
-
-}
-
-
-.tabla-presupuesto th {
-
-    background: #d0d0d0;
-
-    font-weight: bold;
-
-}
-
-
-.tabla-presupuesto input {
-
-    width: 100%;
-
-    border: none;
-
-    outline: none;
-
-    background: transparent;
-
-    text-align: center;
-
-    font-size: 6px;
-
-}
-
-
-.campo-monto {
-
-    text-align: right !important;
-
-}
-
-
-.controles-partidas {
-
-    display: flex;
-
-    justify-content: center;
-
-    margin-top: 7px;
-
-}
-
-
-.totales-compromiso {
-
-    margin-top: 10px;
-
-    border: 1px solid #111;
-
-    width: 75%;
-
-    padding: 5px;
-
-    font-size: 7.5px;
-
-}
-
-
-.totales-compromiso > div {
-
-    margin-bottom: 5px;
-
-}
-
-
-/* =========================================================
-   DETALLE
-========================================================= */
-
-.tabla-detalle {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    font-size: 8px;
-
-}
-
-
-.tabla-detalle th,
-.tabla-detalle td {
-
-    border: 1px solid #111;
-
-    padding: 4px;
-
-    vertical-align: top;
-
-}
-
-
-.tabla-detalle th {
-
-    text-align: center;
-
-    background: #d0d0d0;
-
-}
-
-
-.detalle-renglon {
-
-    width: 20mm;
-
-}
-
-
-.detalle-texto {
-
-    width: 100%;
-
-    min-height: 100px;
-
-    border: none;
-
-    outline: none;
-
-    resize: vertical;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    font-size: 8px;
-
-    line-height: 1.4;
-
-}
-
-
-.detalle-texto:focus {
-
-    background: #fffde7;
-
-}
-
-
-/* =========================================================
-   BOTÓN PDF
-========================================================= */
-
-.zona-descarga {
-
-    width: 210mm;
-
-    margin: 25px auto 40px;
-
-    display: flex;
-
-    justify-content: center;
-
+.no-print{
+display:none!important
 }
-
-
-.boton-pdf {
-
-    border: none;
-
-    border-radius: 6px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #1e5b39,
-            #287b4d
-        );
 
-    color: white;
-
-    padding: 14px 30px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    letter-spacing: .3px;
-
-    box-shadow:
-        0 4px 10px rgba(0,0,0,.25);
-
-    cursor: pointer;
-
+.page{
+width:210mm!important;
+height:297mm!important;
+min-height:297mm!important;
+margin:0!important;
+padding:7mm 8mm 14mm!important;
+box-shadow:none!important;
+overflow:hidden;
+page-break-after:always;
+break-after:page
 }
-
 
-.boton-pdf:hover {
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 6px 14px rgba(0,0,0,.3);
-
+.page:last-child{
+page-break-after:auto;
+break-after:auto
 }
-
 
-.boton-pdf:active {
-
-    transform: translateY(0);
-
+.grid tr{
+break-inside:avoid;
+page-break-inside:avoid
 }
-
-
-.boton-pdf:disabled {
 
-    opacity: .65;
-
-    cursor: wait;
-
+.line{
+border-bottom:0!important
 }
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 850px) {
-
-    body {
-
-        background: white;
-
-    }
 
-
-    .hoja {
-
-        width: 100%;
-
-        margin: 0;
-
-        box-shadow: none;
-
-        min-height: auto;
-
-    }
-
-
-    .zona-descarga {
-
-        width: 100%;
-
-    }
-
+.box input{
+border:0!important
 }
-
-
-/* =========================================================
-   IMPRESIÓN / PDF
-========================================================= */
-
-@media print {
-
-    body {
-
-        background: white;
 
-        padding: 0;
-
-    }
-
-
-    .no-print {
-
-        display: none !important;
-
-    }
-
-
-    .hoja {
-
-        width: 210mm;
-
-        min-height: 297mm;
-
-        margin: 0;
-
-        box-shadow: none;
-
-        page-break-after: always;
-
-        break-after: page;
-
-    }
-
-
-    .hoja:last-child {
-
-        page-break-after: auto;
-
-        break-after: auto;
-
-    }
-
-
-    input,
-    textarea {
-
-        background: transparent !important;
-
-    }
-
+.main textarea{
+overflow:hidden
 }
 
-
-/* =========================================================
-   EVITAR CORTES FEOS
-========================================================= */
-
-.tabla-renglones tr,
-.tabla-entregas tr,
-.tabla-presupuesto tr,
-.tabla-detalle tr {
-
-    break-inside: avoid;
-
-    page-break-inside: avoid;
-
+.main input,
+.main textarea,
+.cron input,
+.cron textarea,
+.budget input,
+.detail textarea{
+color:#111
 }
-
-
-.firmas,
-.totales-compromiso,
-.texto-legal {
-
-    break-inside: avoid;
-
-    page-break-inside: avoid;
 
 }
