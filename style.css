@@ -1,614 +1,874 @@
-const $ = s => document.querySelector(s);
+*{
+    box-sizing:border-box;
+}
 
-const $$ = s => [...document.querySelectorAll(s)];
+html,
+body{
+    margin:0;
+    padding:0;
+    background:#e8e8e8;
+    color:#111;
+    font-family:"Courier New",Courier,monospace;
+    font-size:9px;
+}
 
-const rows = $('#rows');
-const schedule = $('#schedule');
-const parts = $('#parts');
-const details = $('#details');
-
-
-/* =========================================================
-   FORMATO DE DINERO
-========================================================= */
-
-function money(n){
-
-return new Intl.NumberFormat('es-AR',{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-}).format(Number(n)||0);
-
+body{
+    padding-bottom:34px;
 }
 
 
-function num(v){
+/* =========================
+   BARRA DE EDICION
+========================= */
 
-v = String(v||'')
-.trim()
-.replace(/\$/g,'')
-.replace(/\./g,'')
-.replace(',','.');
+.editor-bar{
+    width:210mm;
+    margin:10px auto 8px;
+    padding:7px 9px;
+    background:#fff;
+    border:1px solid #c7c7c7;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    font-family:Arial,sans-serif;
+}
 
-let n = Number(v);
+.editor-title{
+    font-weight:700;
+    font-size:12px;
+}
 
-return Number.isFinite(n) ? n : 0;
+.editor-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
 
+button{
+    border:1px solid #777;
+    background:#f4f4f4;
+    border-radius:4px;
+    padding:6px 10px;
+    cursor:pointer;
+    font:11px Arial,sans-serif;
+}
+
+button:hover{
+    background:#e5e5e5;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:wait;
 }
 
 
-/* =========================================================
-   NÚMEROS A LETRAS
-========================================================= */
+/* =========================
+   HOJA A4
+========================= */
 
-function words(n){
-
-n = Math.floor(Math.abs(Number(n)||0));
-
-const u = [
-'cero',
-'uno',
-'dos',
-'tres',
-'cuatro',
-'cinco',
-'seis',
-'siete',
-'ocho',
-'nueve',
-'diez',
-'once',
-'doce',
-'trece',
-'catorce',
-'quince',
-'dieciséis',
-'diecisiete',
-'dieciocho',
-'diecinueve',
-'veinte'
-];
-
-if(n<=20)
-return u[n];
-
-if(n<30)
-return'veinti'+u[n-20];
-
-const d=[
-'',
-'',
-'veinte',
-'treinta',
-'cuarenta',
-'cincuenta',
-'sesenta',
-'setenta',
-'ochenta',
-'noventa'
-];
-
-if(n<100)
-return d[Math.floor(n/10)] +
-(n%10 ? ' y '+u[n%10] : '');
-
-if(n<1000){
-
-if(n===100)
-return'cien';
-
-const c=[
-'',
-'ciento',
-'doscientos',
-'trescientos',
-'cuatrocientos',
-'quinientos',
-'seiscientos',
-'setecientos',
-'ochocientos',
-'novecientos'
-];
-
-return c[Math.floor(n/100)] +
-(n%100 ? ' '+words(n%100) : '');
-
-}
-
-if(n<1e6){
-
-let a=Math.floor(n/1000);
-let b=n%1000;
-
-return(
-a===1 ? 'mil' : words(a)+' mil'
-)+
-(b ? ' '+words(b) : '');
-
-}
-
-if(n<1e9){
-
-let a=Math.floor(n/1e6);
-let b=n%1e6;
-
-return(
-a===1 ? 'un millón' : words(a)+' millones'
-)+
-(b ? ' '+words(b) : '');
-
-}
-
-return String(n);
-
+.pagina{
+    position:relative;
+    width:210mm;
+    height:297mm;
+    margin:0 auto 12px;
+    padding:7mm 8mm 15mm;
+    background:#fff;
+    box-shadow:0 2px 12px rgba(0,0,0,.16);
 }
 
 
-/* =========================================================
-   RENGLONES
-========================================================= */
+/* =========================
+   CABECERA
+========================= */
 
-function addRow(){
+.cabecera{
+    height:15mm;
+    display:grid;
+    grid-template-columns:58% 42%;
+    align-items:start;
+}
 
-let i = rows.children.length + 1;
+.logo-wrap{
+    height:14mm;
+    display:flex;
+    align-items:center;
+}
 
-let tr = document.createElement('tr');
+.logo-gobierno{
+    width:48mm;
+    height:auto;
+    display:block;
+}
 
-tr.innerHTML = `
+.ministerio{
+    padding-top:.5mm;
+    font-size:7.4px;
+    line-height:1.35;
+    font-weight:700;
+    text-align:left;
+}
 
-<td class="rn">
-${i}
-</td>
-
-<td>
-<input
-class="qty"
-type="number"
-min="0"
-step="any">
-</td>
-
-<td>
-
-<textarea
-class="desc"
-rows="2"></textarea>
-
-<input
-class="brand"
-placeholder="Marca: ">
-
-</td>
-
-<td>
-
-<input
-class="period">
-
-</td>
-
-<td>
-
-<input
-class="price"
-inputmode="decimal"
-placeholder="0,00">
-
-</td>
-
-<td>
-
-<input
-class="rowtotal"
-value="0,00"
-readonly>
-
-</td>
-
-`;
-
-rows.appendChild(tr);
-
-bindRow(tr);
-
-syncSchedule();
-
-syncDetails();
-
-calc();
-
+.cabecera-linea{
+    border-top:.55px solid #111;
+    margin-bottom:2.5mm;
 }
 
 
-function bindRow(tr){
+/* =========================
+   FECHA Y NUMERO
+========================= */
 
-$$('input,textarea',tr).forEach(x => {
+.encabezado-oc{
+    display:grid;
+    grid-template-columns:54% 46%;
+    align-items:start;
+    margin-bottom:1.8mm;
+}
 
-x.addEventListener('input',()=>{
+.fecha-numero{
+    border:.55px solid #111;
+    width:49mm;
+    padding:1mm 1.5mm;
+    font-size:7.1px;
+    line-height:1.35;
+}
 
-calc();
+.fecha-numero label{
+    display:block;
+    white-space:nowrap;
+}
 
-syncScheduleQty();
+.campo-fecha{
+    width:27mm;
+}
 
-syncDetails();
+.campo-numero{
+    width:17mm;
+}
 
-});
-
-});
-
+.sello{
+    border:.55px solid #111;
+    padding:1mm 1.4mm;
+    font-size:6.4px;
+    line-height:1.18;
+    font-weight:700;
+    text-align:left;
+    width:61mm;
+    justify-self:end;
 }
 
 
-function removeRow(){
+/* =========================
+   TITULOS
+========================= */
 
-if(rows.children.length<=1){
-
-alert('Debe quedar al menos un renglón.');
-
-return;
-
+h1{
+    text-align:center;
+    font-size:10.5px;
+    margin:1.2mm 0 2.2mm;
 }
 
-rows.lastElementChild.remove();
-
-renumber();
-
-syncSchedule();
-
-syncDetails();
-
-calc();
-
+h2{
+    text-align:center;
+    font-size:9.2px;
+    margin:1mm 0 1.5mm;
 }
 
-
-function renumber(){
-
-$$('.rn').forEach((x,i)=>{
-
-x.textContent=i+1;
-
-});
-
+h3{
+    text-align:center;
+    font-size:8.5px;
+    margin:0 0 2.5mm;
 }
 
 
-/* =========================================================
-   CRONOGRAMA
-========================================================= */
-
-function syncSchedule(){
-
-let old = [...schedule.children].map(x => ({
-
-p:x.querySelector('.plazo')?.value || '',
-
-l:x.querySelector('.lugar')?.value || ''
-
-}));
-
-schedule.innerHTML='';
-
-[...rows.children].forEach((r,i)=>{
-
-let tr=document.createElement('tr');
-
-tr.innerHTML=`
-
-<td style="text-align:center">
-${i+1}
-</td>
-
-<td>
-
-<input
-class="sqty"
-value="${r.querySelector('.qty').value||''}">
-
-</td>
-
-<td>
-
-<input
-class="plazo"
-value="${old[i]?.p||''}">
-
-</td>
-
-<td>
-
-<textarea
-class="lugar"
-rows="1">${old[i]?.l||''}</textarea>
-
-</td>
-
-`;
-
-schedule.appendChild(tr);
-
-tr.querySelector('.sqty')
-.addEventListener('input',e=>{
-
-r.querySelector('.qty').value=e.target.value;
-
-calc();
-
-});
-
-});
-
-}
-
-
-function syncScheduleQty(){
-
-[...schedule.children].forEach((tr,i)=>{
-
-let q = rows.children[i]?.querySelector('.qty');
-
-if(q)
-tr.querySelector('.sqty').value=q.value;
-
-});
-
-}
-
-
-/* =========================================================
-   DETALLE DEL ANEXO
-========================================================= */
-
-function syncDetails(){
-
-let old = [...details.children].map(x =>
-
-x.querySelector('.detExtra')?.value || ''
-
-);
-
-details.innerHTML='';
-
-[...rows.children].forEach((r,i)=>{
-
-let tr=document.createElement('tr');
-
-let text =
-r.querySelector('.desc').value +
-(
-r.querySelector('.brand').value
-?
-'\nMarca: '+r.querySelector('.brand').value
-:
-''
-);
-
-tr.innerHTML=`
-
-<td style="text-align:center">
-${i+1}
-</td>
-
-<td>
-
-<textarea
-class="detMain">${text
-.replace(/&/g,'&amp;')
-.replace(/</g,'&lt;')}</textarea>
-
-<textarea
-class="detExtra"
-placeholder="Detalle de entrega / instrucciones">${old[i]||''}</textarea>
-
-</td>
-
-`;
-
-details.appendChild(tr);
-
-});
-
-}
-
-
-/* =========================================================
-   PARTIDAS PRESUPUESTARIAS
-========================================================= */
-
-function addPart(){
-
-let tr=document.createElement('tr');
-
-tr.innerHTML =
-'<td>'+
-Array(16)
-.fill('<input>')
-.join('</td><td>')+
-'</td>'+
-'<td>'+
-'<input class="pmonto" readonly value="0,00">'+
-'</td>';
-
-parts.appendChild(tr);
-
-calc();
-
-}
-
-
-/* =========================================================
-   CÁLCULO DE TOTALES
-========================================================= */
-
-function calc(){
-
-let total=0;
-
-[...rows.children].forEach(r=>{
-
-let cantidad =
-Number(
-r.querySelector('.qty').value
-)||0;
-
-let precio =
-num(
-r.querySelector('.price').value
-);
-
-let subtotal =
-cantidad * precio;
-
-r.querySelector('.rowtotal').value =
-money(subtotal);
-
-total += subtotal;
-
-});
-
-$('#total').textContent =
-money(total);
-
-$('#commitTotal').textContent =
-money(total);
-
-$('#words').textContent =
-words(total)+' '+
-(total===1?'peso':'pesos');
-
-$$('.pmonto').forEach(x=>{
-
-x.value=money(total);
-
-});
-
-}
-
-
-/* =========================================================
-   SINCRONIZACIÓN DE CABECERA
-========================================================= */
-
-function sync(){
-
-let d=$('#fecha').value;
-
-let n=$('#numero').value;
-
-let p=$('#proveedor').value;
-
-let shown =
-d
-?
-d.split('-').reverse().join('/')
-:
-'';
-
-let ids=[
-'annDate',
-'detDate',
-'printDate'
-];
-
-ids.forEach(id=>{
-
-$('#'+id).textContent=shown;
-
-});
-
-$$('.footDate').forEach(x=>{
-
-x.textContent=shown;
-
-});
-
-$('#annNum').textContent=n;
-
-$('#detNum').textContent=n;
-
-$$('.syncProv').forEach(x=>{
-
-x.value=p;
-
-});
-
-}
-
-
-/* =========================================================
-   INICIO
-========================================================= */
-
-function init(){
-
-let d=new Date();
-
-let iso=d.toISOString().slice(0,10);
-
-$('#fecha').value=iso;
-
-
-/*
-   AL ABRIR:
-   EXACTAMENTE 1 RENGLÓN
-*/
-
-addRow();
-
-
-/*
-   AL ABRIR:
-   EXACTAMENTE 1 PARTIDA
-*/
-
-addPart();
-
-
-/*
-   BOTONES
-*/
-
-$('#addRow').onclick=addRow;
-
-$('#delRow').onclick=removeRow;
-
-$('#addPart').onclick=addPart;
-
-$('#addPart2').onclick=addPart;
-
-
-/*
+/* =========================
    CAMPOS
-*/
+========================= */
 
-$('#fecha').onchange=sync;
+.editable{
+    font:inherit;
+    color:#111;
+    background:transparent;
+}
 
-$('#numero').oninput=sync;
+.linea{
+    border:0;
+    border-bottom:.45px solid #333;
+    outline:none;
+    padding:0 1mm;
+    height:3.8mm;
+    min-width:18mm;
+}
 
-$('#proveedor').oninput=sync;
+.linea:focus,
+.editable:focus{
+    background:#fffde1;
+}
+
+.linea.exp{
+    width:78mm;
+}
+
+.linea.corta{
+    width:21mm;
+}
+
+.linea.proveedor{
+    width:78mm;
+}
+
+.forma-pago{
+    width:38mm;
+}
+
+.linea.norma{
+    width:38mm;
+}
+
+.fecha-adj{
+    width:24mm;
+}
+
+.datos-superiores{
+    font-size:7.5px;
+    line-height:1.45;
+}
+
+.datos-superiores>div{
+    margin-bottom:.65mm;
+}
+
+.texto-intro{
+    margin:1.5mm 0 1.3mm;
+    font-size:7.5px;
+    line-height:1.2;
+}
 
 
-/*
-   PDF / IMPRESIÓN
-*/
+/* =========================
+   TABLA OC
+========================= */
 
-$('#pdf').onclick=()=>{
+.tabla{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
 
-sync();
+.tabla th,
+.tabla td{
+    border:.55px solid #111;
+}
 
-calc();
+.tabla th{
+    background:#cfcfcf;
+    font-weight:700;
+    text-align:center;
+    vertical-align:middle;
+}
 
-window.print();
+.tabla-renglones{
+    font-size:7.1px;
+}
 
-};
+.tabla-renglones th{
+    height:7mm;
+}
+
+.c-reng{
+    width:9mm;
+}
+
+.c-cant{
+    width:12mm;
+}
+
+.c-item{
+    width:auto;
+}
+
+.c-per{
+    width:9mm;
+}
+
+.c-unit{
+    width:28mm;
+}
+
+.c-total{
+    width:29mm;
+}
+
+.renglon td{
+    vertical-align:top;
+    padding:1mm;
+}
+
+.reng-num{
+    text-align:center;
+    padding-top:1.8mm!important;
+}
+
+.campo-cantidad,
+.campo-periodo,
+.campo-precio{
+    width:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    font-size:7.2px;
+}
+
+.campo-cantidad{
+    text-align:center;
+}
+
+.campo-periodo{
+    text-align:center;
+}
+
+.campo-precio{
+    text-align:right;
+}
+
+.descripcion{
+    width:100%;
+    min-height:11mm;
+    resize:vertical;
+    border:0;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    font-size:7.2px;
+    line-height:1.18;
+    padding:0;
+}
+
+.marca{
+    display:block;
+    width:100%;
+    border:0;
+    border-top:.45px dotted #888;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    font-weight:700;
+    font-size:7.2px;
+    padding:.8mm 0 0;
+}
+
+.campo-total{
+    width:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    text-align:right;
+    font:inherit;
+    font-size:7.2px;
+}
+
+.total-label{
+    text-align:right;
+    font-weight:700;
+    height:5mm;
+    padding-right:1.5mm;
+}
+
+.total-value{
+    text-align:right;
+    padding-right:1.2mm;
+    font-weight:700;
+}
 
 
-sync();
+/* =========================
+   TOTAL
+========================= */
+
+.texto-total{
+    font-size:7.4px;
+    line-height:1.55;
+    margin-top:1.5mm;
+}
+
+.bloque-registrado{
+    margin-top:1mm;
+    font-size:7.2px;
+}
+
+.mini-tabla{
+    border-collapse:collapse;
+    margin-top:.7mm;
+}
+
+.mini-tabla th,
+.mini-tabla td{
+    border:.5px solid #111;
+    text-align:center;
+    padding:.7mm 2.5mm;
+}
+
+.mini-tabla th{
+    background:#cfcfcf;
+}
+
+.mini-input{
+    width:10mm;
+    border:0;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    text-align:center;
+}
+
+.texto-legal{
+    font-size:6.9px;
+    line-height:1.18;
+    margin-top:2mm;
+    text-align:justify;
+}
+
+
+/* =========================
+   CRONOGRAMA
+========================= */
+
+.cronograma-bloque{
+    margin-top:2mm;
+}
+
+.titulo-cronograma{
+    font-size:8.8px;
+    font-weight:700;
+    margin-bottom:1mm;
+}
+
+.tabla-cronograma{
+    font-size:7.1px;
+}
+
+.cr-reng{
+    width:20mm;
+}
+
+.cr-cant{
+    width:20mm;
+}
+
+.cr-plazo{
+    width:27mm;
+}
+
+.cr-lugar{
+    width:auto;
+}
+
+.tabla-cronograma th{
+    height:7mm;
+}
+
+.tabla-cronograma td{
+    height:7mm;
+    padding:1mm;
+    vertical-align:middle;
+}
+
+.entrega-cantidad,
+.entrega-plazo,
+.entrega-lugar{
+    width:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    font-size:7.1px;
+}
+
+.entrega-cantidad{
+    text-align:center;
+}
+
+.entrega-plazo{
+    text-align:center;
+}
+
+.entrega-lugar{
+    min-height:5mm;
+    resize:vertical;
+}
+
+.nota-fiscal{
+    font-size:7.2px;
+    font-weight:700;
+    margin:2.5mm 1mm 0;
+}
+
+.firmas{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    text-align:center;
+    font-size:7px;
+    margin-top:9mm;
+}
+
+.linea-firma{
+    width:43mm;
+    margin:0 auto 1.3mm;
+    border-top:.5px dotted #333;
+}
+
+.fecha-notificacion{
+    margin-bottom:1.3mm;
+}
+
+
+/* =========================
+   PIE
+========================= */
+
+.pie{
+    position:absolute;
+    left:8mm;
+    right:8mm;
+    bottom:4mm;
+    border-top:.5px solid #111;
+    padding-top:1.2mm;
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:6mm;
+    font-size:6px;
+    align-items:end;
+}
+
+
+/* =========================
+   ANEXO PRESUPUESTARIO
+========================= */
+
+.anexo-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    margin-bottom:1mm;
+}
+
+.fecha-numero.compacto{
+    width:49mm;
+    line-height:1.35;
+    border:0;
+    padding:0;
+    text-align:left;
+}
+
+.datos-anexo{
+    font-size:7.5px;
+    line-height:1.5;
+    margin-bottom:3mm;
+}
+
+.datos-anexo>div{
+    margin-bottom:.5mm;
+}
+
+.tabla-presupuesto{
+    font-size:5.5px;
+}
+
+.tabla-presupuesto th,
+.tabla-presupuesto td{
+    height:6.5mm;
+    padding:.4mm;
+    text-align:center;
+}
+
+.tabla-presupuesto th{
+    height:7mm;
+}
+
+.tabla-presupuesto input{
+    width:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    font:inherit;
+    text-align:center;
+    font-size:5.4px;
+}
+
+.tabla-presupuesto .monto-col{
+    width:28mm;
+}
+
+.campo-monto{
+    text-align:right!important;
+}
+
+.partida-controls{
+    margin-top:2mm;
+}
+
+.totales-presupuesto{
+    width:67%;
+    border:.5px solid #111;
+    margin-top:2mm;
+    padding:1.3mm 1.7mm;
+    font-size:7.2px;
+    line-height:1.7;
+}
+
+.monto-futuro{
+    width:32mm;
+}
+
+
+/* =========================
+   ANEXO DETALLE DINAMICO
+========================= */
+
+#detallePaginas{
+    width:210mm;
+    margin:0 auto;
+}
+
+.pagina-detalle{
+    height:297mm;
+}
+
+.detalle-cabecera{
+    font-size:7.5px;
+    line-height:1.5;
+    margin-bottom:2mm;
+}
+
+.detalle-cabecera .compacto{
+    float:right;
+    width:49mm;
+}
+
+.tabla-detalle{
+    font-size:7.1px;
+}
+
+.det-reng{
+    width:16mm;
+}
+
+.det-item{
+    width:auto;
+}
+
+.tabla-detalle th{
+    height:7mm;
+    text-align:left;
+}
+
+.tabla-detalle td{
+    vertical-align:top;
+    padding:0;
+}
+
+.detalle-row{
+    display:grid;
+    grid-template-columns:16mm 1fr;
+    break-inside:avoid;
+    page-break-inside:avoid;
+}
+
+.detalle-row+.detalle-row{
+    border-top:.55px solid #111;
+}
+
+.detalle-num{
+    padding:1.5mm;
+    text-align:center;
+    font-weight:700;
+}
+
+.detalle-content{
+    padding:1.5mm;
+}
+
+.detalle-descripcion{
+    white-space:pre-wrap;
+    line-height:1.22;
+}
+
+.detalle-marca{
+    font-weight:700;
+    margin-top:.8mm;
+}
+
+.detalle-linea{
+    border-top:.45px dotted #777;
+    margin:1.2mm 0 .7mm;
+}
+
+.detalle-label{
+    font-weight:700;
+}
+
+.detalle-editable{
+    display:block;
+    width:100%;
+    min-height:12mm;
+    height:12mm;
+    resize:vertical;
+    border:.45px solid #aaa;
+    outline:none;
+    background:#fff;
+    font:inherit;
+    font-size:7.1px;
+    line-height:1.2;
+    padding:1mm;
+}
+
+.detalle-print{
+    display:none;
+    white-space:pre-wrap;
+    line-height:1.2;
+}
+
+.detalle-row .detalle-print{
+    margin-top:.4mm;
+}
+
+
+/* =========================
+   BOTON FINAL
+========================= */
+
+.download-zone{
+    width:210mm;
+    margin:16px auto 30px;
+    text-align:center;
+}
+
+#btnPDF{
+    background:#21643e;
+    color:#fff;
+    border:0;
+    border-radius:5px;
+    padding:12px 28px;
+    font:700 13px Arial,sans-serif;
+    box-shadow:0 3px 9px rgba(0,0,0,.2);
+}
+
+#btnPDF:hover{
+    background:#185130;
+}
+
+
+/* =========================
+   CELULAR
+========================= */
+
+@media(max-width:850px){
+
+    .editor-bar,
+    .pagina,
+    .download-zone,
+    #detallePaginas{
+        width:100%;
+    }
+
+    .pagina{
+        padding-left:5mm;
+        padding-right:5mm;
+        overflow-x:auto;
+    }
+
+    .editor-bar{
+        flex-direction:column;
+        align-items:stretch;
+    }
 
 }
 
 
-document.addEventListener(
-'DOMContentLoaded',
-init
-);
+/* =========================
+   IMPRESION NATIVA
+========================= */
+
+@media print{
+
+    @page{
+        size:A4 portrait;
+        margin:0;
+    }
+
+    html,
+    body{
+        background:#fff!important;
+        margin:0!important;
+        padding:0!important;
+    }
+
+    .no-print,
+    .editor-bar,
+    .download-zone{
+        display:none!important;
+    }
+
+    .pagina{
+        width:210mm!important;
+        height:297mm!important;
+        margin:0!important;
+        padding:7mm 8mm 15mm!important;
+        box-shadow:none!important;
+        page-break-after:always;
+        break-after:page;
+        overflow:hidden;
+    }
+
+    .pagina-principal,
+    .pagina-cronograma,
+    .pagina-anexo-presupuesto{
+        break-after:page;
+        page-break-after:always;
+    }
+
+    .pagina-detalle{
+        break-after:page;
+        page-break-after:always;
+    }
+
+    #detallePaginas{
+        width:210mm!important;
+        margin:0!important;
+    }
+
+    input,
+    textarea{
+        color:#111!important;
+    }
+
+    input[type=date]{
+        appearance:none;
+        -webkit-appearance:none;
+    }
+
+    .editable{
+        border-color:transparent!important;
+        background:transparent!important;
+    }
+
+    .detalle-editable{
+        display:none!important;
+    }
+
+    .detalle-print{
+        display:block!important;
+    }
+
+    .detalle-row,
+    .tabla-cronograma tr,
+    .tabla-presupuesto tr,
+    .renglon,
+    .firmas{
+        break-inside:avoid;
+        page-break-inside:avoid;
+    }
+
+}
