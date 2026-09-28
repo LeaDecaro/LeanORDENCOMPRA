@@ -8,14 +8,22 @@
 ========================================================= */
 
 function $(selector) {
-    return document.querySelector(selector);
+
+    return document.querySelector(
+        selector
+    );
+
 }
 
 
 function $all(selector) {
+
     return Array.from(
-        document.querySelectorAll(selector)
+        document.querySelectorAll(
+            selector
+        )
     );
+
 }
 
 
@@ -25,22 +33,31 @@ function $all(selector) {
 
 function parseMoney(value) {
 
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
         return 0;
+
     }
 
-    let texto = String(value)
-        .trim()
-        .replace(/\$/g, "")
-        .replace(/\s/g, "");
+
+    let texto =
+        String(value)
+            .trim()
+            .replace(/\$/g, "")
+            .replace(/\s/g, "");
+
 
     if (!texto) {
+
         return 0;
+
     }
 
 
     /*
-       Si viene como:
        100.000,50
     */
 
@@ -56,15 +73,20 @@ function parseMoney(value) {
 
     }
 
+
     /*
-       Si viene como:
        100,50
     */
 
-    else if (texto.includes(",")) {
+    else if (
+        texto.includes(",")
+    ) {
 
         texto =
-            texto.replace(",", ".");
+            texto.replace(
+                ",",
+                "."
+            );
 
     }
 
@@ -96,13 +118,15 @@ function money(number) {
 
 
 /* =========================================================
-   NUMERO EN LETRAS
+   NUMEROS EN LETRAS
 ========================================================= */
 
 function unidades(n) {
 
     const lista = [
+
         "",
+
         "uno",
         "dos",
         "tres",
@@ -123,7 +147,9 @@ function unidades(n) {
         "dieciocho",
         "diecinueve",
         "veinte"
+
     ];
+
 
     return lista[n];
 
@@ -132,22 +158,31 @@ function unidades(n) {
 
 function menores100(n) {
 
-    if (n <= 20) {
+    if (
+        n <= 20
+    ) {
+
         return unidades(n);
+
     }
 
 
-    if (n < 30) {
+    if (
+        n < 30
+    ) {
 
         return (
             "veinti" +
-            unidades(n - 20)
+            unidades(
+                n - 20
+            )
         );
 
     }
 
 
     const decenas = [
+
         "",
         "",
         "veinte",
@@ -158,18 +193,26 @@ function menores100(n) {
         "setenta",
         "ochenta",
         "noventa"
+
     ];
 
 
     const d =
-        Math.floor(n / 10);
+        Math.floor(
+            n / 10
+        );
+
 
     const u =
         n % 10;
 
 
-    if (u === 0) {
+    if (
+        u === 0
+    ) {
+
         return decenas[d];
+
     }
 
 
@@ -184,17 +227,26 @@ function menores100(n) {
 
 function menores1000(n) {
 
-    if (n < 100) {
+    if (
+        n < 100
+    ) {
+
         return menores100(n);
+
     }
 
 
-    if (n === 100) {
+    if (
+        n === 100
+    ) {
+
         return "cien";
+
     }
 
 
     const centenas = [
+
         "",
         "ciento",
         "doscientos",
@@ -205,18 +257,26 @@ function menores1000(n) {
         "setecientos",
         "ochocientos",
         "novecientos"
+
     ];
 
 
     const c =
-        Math.floor(n / 100);
+        Math.floor(
+            n / 100
+        );
+
 
     const resto =
         n % 100;
 
 
-    if (resto === 0) {
+    if (
+        resto === 0
+    ) {
+
         return centenas[c];
+
     }
 
 
@@ -239,20 +299,33 @@ function numeroLetras(n) {
         );
 
 
-    if (n === 0) {
+    if (
+        n === 0
+    ) {
+
         return "cero";
+
     }
 
 
-    if (n < 1000) {
+    if (
+        n < 1000
+    ) {
+
         return menores1000(n);
+
     }
 
 
-    if (n < 1000000) {
+    if (
+        n < 1000000
+    ) {
 
         const miles =
-            Math.floor(n / 1000);
+            Math.floor(
+                n / 1000
+            );
+
 
         const resto =
             n % 1000;
@@ -260,34 +333,53 @@ function numeroLetras(n) {
 
         let texto;
 
-        if (miles === 1) {
+
+        if (
+            miles === 1
+        ) {
+
             texto = "mil";
-        } else {
+
+        }
+
+        else {
+
             texto =
-                menores1000(miles) +
+                menores1000(
+                    miles
+                ) +
                 " mil";
+
         }
 
 
-        if (resto) {
+        if (
+            resto
+        ) {
 
             texto +=
                 " " +
-                menores1000(resto);
+                menores1000(
+                    resto
+                );
 
         }
 
 
         return texto;
+
     }
 
 
-    if (n < 1000000000) {
+    if (
+        n < 1000000000
+    ) {
 
         const millones =
             Math.floor(
                 n / 1000000
             );
+
 
         const resto =
             n % 1000000;
@@ -295,25 +387,42 @@ function numeroLetras(n) {
 
         let texto;
 
-        if (millones === 1) {
-            texto = "un millón";
-        } else {
+
+        if (
+            millones === 1
+        ) {
+
             texto =
-                menores1000(millones) +
+                "un millón";
+
+        }
+
+        else {
+
+            texto =
+                menores1000(
+                    millones
+                ) +
                 " millones";
+
         }
 
 
-        if (resto) {
+        if (
+            resto
+        ) {
 
             texto +=
                 " " +
-                numeroLetras(resto);
+                numeroLetras(
+                    resto
+                );
 
         }
 
 
         return texto;
+
     }
 
 
@@ -335,13 +444,19 @@ function fechaHoy() {
     const dia =
         String(
             ahora.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const mes =
         String(
             ahora.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const año =
@@ -366,7 +481,9 @@ function fechaHoy() {
 function crearRenglon(numero) {
 
     const tr =
-        document.createElement("tr");
+        document.createElement(
+            "tr"
+        );
 
 
     tr.className =
@@ -447,11 +564,6 @@ function crearRenglon(numero) {
     `;
 
 
-    /*
-       Cada vez que cambia cantidad
-       o precio, recalculamos.
-    */
-
     tr.querySelector(
         ".campo-cantidad"
     ).addEventListener(
@@ -467,11 +579,6 @@ function crearRenglon(numero) {
         recalcularTodo
     );
 
-
-    /*
-       La descripción también actualiza
-       el anexo automáticamente.
-    */
 
     tr.querySelector(
         ".descripcion"
@@ -549,11 +656,13 @@ function quitarRenglon() {
 
 
     /*
-       Nunca dejamos la tabla
-       sin ningún renglón.
+       Siempre debe quedar
+       como mínimo un renglón.
     */
 
-    if (renglones.length <= 1) {
+    if (
+        renglones.length <= 1
+    ) {
 
         alert(
             "La Orden de Compra debe tener al menos un renglón."
@@ -593,7 +702,10 @@ function renumerarRenglones() {
 
 
     renglones.forEach(
-        (renglon, index) => {
+        function(
+            renglon,
+            index
+        ) {
 
             renglon.querySelector(
                 ".renglon-numero"
@@ -607,7 +719,7 @@ function renumerarRenglones() {
 
 
 /* =========================================================
-   CALCULAR RENGLONES
+   CALCULAR TODO
 ========================================================= */
 
 function recalcularTodo() {
@@ -623,7 +735,9 @@ function recalcularTodo() {
 
 
     renglones.forEach(
-        renglon => {
+        function(
+            renglon
+        ) {
 
             const cantidad =
                 Number(
@@ -642,13 +756,16 @@ function recalcularTodo() {
 
 
             const subtotal =
-                cantidad * precio;
+                cantidad *
+                precio;
 
 
             renglon.querySelector(
                 ".campo-total"
             ).value =
-                money(subtotal);
+                money(
+                    subtotal
+                );
 
 
             total +=
@@ -664,7 +781,9 @@ function recalcularTodo() {
 
     $("#totalGeneral")
         .textContent =
-            money(total);
+            money(
+                total
+            );
 
 
     /*
@@ -679,18 +798,22 @@ function recalcularTodo() {
 
     $("#totalLetras")
         .textContent =
-            numeroLetras(total) +
+            numeroLetras(
+                total
+            ) +
             " " +
             palabraPeso;
 
 
     /*
-       TOTAL DEL ANEXO
+       TOTAL PRESUPUESTARIO
     */
 
     $("#totalCompromiso")
         .textContent =
-            money(total);
+            money(
+                total
+            );
 
 
     /*
@@ -700,10 +823,12 @@ function recalcularTodo() {
     $all(
         ".campo-monto"
     ).forEach(
-        campo => {
+        function(campo) {
 
             campo.value =
-                money(total);
+                money(
+                    total
+                );
 
         }
     );
@@ -720,17 +845,25 @@ function recalcularTodo() {
    CRONOGRAMA
 ========================================================= */
 
-function crearEntrega(numero, cantidad) {
+function crearEntrega(
+    numero,
+    cantidad
+) {
 
     const tr =
-        document.createElement("tr");
+        document.createElement(
+            "tr"
+        );
 
 
     tr.innerHTML = `
 
         <td
             class="entrega-numero"
-            style="text-align:center;font-weight:bold;"
+            style="
+                text-align:center;
+                font-weight:bold;
+            "
         >
             ${numero}
         </td>
@@ -791,13 +924,19 @@ function actualizarEntregas() {
         );
 
 
-    principal.innerHTML = "";
+    principal.innerHTML =
+        "";
 
-    secundaria.innerHTML = "";
+
+    secundaria.innerHTML =
+        "";
 
 
     renglones.forEach(
-        (renglon, index) => {
+        function(
+            renglon,
+            index
+        ) {
 
             const numero =
                 index + 1;
@@ -809,27 +948,19 @@ function actualizarEntregas() {
                 ).value;
 
 
-            const fila1 =
-                crearEntrega(
-                    numero,
-                    cantidad
-                );
-
-
-            const fila2 =
-                crearEntrega(
-                    numero,
-                    cantidad
-                );
-
-
             principal.appendChild(
-                fila1
+                crearEntrega(
+                    numero,
+                    cantidad
+                )
             );
 
 
             secundaria.appendChild(
-                fila2
+                crearEntrega(
+                    numero,
+                    cantidad
+                )
             );
 
         }
@@ -848,7 +979,8 @@ function actualizarDetalles() {
         $("#detalles");
 
 
-    tbody.innerHTML = "";
+    tbody.innerHTML =
+        "";
 
 
     const renglones =
@@ -858,7 +990,10 @@ function actualizarDetalles() {
 
 
     renglones.forEach(
-        (renglon, index) => {
+        function(
+            renglon,
+            index
+        ) {
 
             const numero =
                 index + 1;
@@ -905,12 +1040,6 @@ function actualizarDetalles() {
             `;
 
 
-            /*
-               Si el usuario modifica
-               el detalle del anexo,
-               queda editable.
-            */
-
             tbody.appendChild(
                 tr
             );
@@ -928,10 +1057,13 @@ function actualizarDetalles() {
 function crearPartida() {
 
     const tr =
-        document.createElement("tr");
+        document.createElement(
+            "tr"
+        );
 
 
     const campos = [
+
         "Ejer",
         "Juri",
         "SA",
@@ -948,14 +1080,16 @@ function crearPartida() {
         "Spar",
         "Fufi",
         "Ubge"
+
     ];
 
 
-    let html = "";
+    let html =
+        "";
 
 
     campos.forEach(
-        campo => {
+        function(campo) {
 
             html += `
 
@@ -1013,7 +1147,7 @@ function agregarPartida() {
 
 
 /* =========================================================
-   SINCRONIZAR DATOS
+   SINCRONIZAR DATOS GENERALES
 ========================================================= */
 
 function sincronizarDatos() {
@@ -1033,7 +1167,7 @@ function sincronizarDatos() {
     $all(
         '[data-ref="fecha"]'
     ).forEach(
-        campo => {
+        function(campo) {
 
             campo.value =
                 fecha;
@@ -1045,7 +1179,7 @@ function sincronizarDatos() {
     $all(
         '[data-ref="numeroOC"]'
     ).forEach(
-        campo => {
+        function(campo) {
 
             campo.value =
                 numero;
@@ -1057,7 +1191,7 @@ function sincronizarDatos() {
     $all(
         '[data-ref="proveedor"]'
     ).forEach(
-        campo => {
+        function(campo) {
 
             campo.value =
                 proveedor;
@@ -1069,143 +1203,260 @@ function sincronizarDatos() {
 
 
 /* =========================================================
-   DESCARGAR PDF
+   CARGAR HTML2PDF SOLO AL DESCARGAR
 ========================================================= */
 
-function descargarPDF() {
+function cargarHtml2Pdf() {
 
-    const documento =
-        document.getElementById(
-            "documento"
-        );
+    return new Promise(
+        function(
+            resolve,
+            reject
+        ) {
 
+            /*
+               Si ya está cargado,
+               no hacemos nada.
+            */
 
-    /*
-       El nombre se arma con
-       el número de OC.
-    */
+            if (
+                typeof html2pdf !==
+                "undefined"
+            ) {
 
-    let numero =
-        $("#numeroOC").value
-            .trim();
+                resolve();
 
-
-    if (!numero) {
-        numero = "SinNumero";
-    }
-
-
-    const opciones = {
-
-        margin: 0,
-
-        filename:
-            "Orden_de_Compra_" +
-            numero +
-            ".pdf",
-
-        image: {
-
-            type: "jpeg",
-
-            quality: 0.98
-
-        },
-
-        html2canvas: {
-
-            scale: 2,
-
-            useCORS: true,
-
-            allowTaint: true,
-
-            backgroundColor: "#ffffff",
-
-            logging: false
-
-        },
-
-        jsPDF: {
-
-            unit: "mm",
-
-            format: "a4",
-
-            orientation: "portrait"
-
-        },
-
-        pagebreak: {
-
-            mode: [
-                "css",
-                "legacy"
-            ],
-
-            avoid: [
-                "tr",
-                ".firmas",
-                ".texto-legal"
-            ]
-
-        }
-
-    };
-
-
-    /*
-       Desactivamos temporalmente
-       el foco amarillo.
-    */
-
-    document.body.classList.add(
-        "generando-pdf"
-    );
-
-
-    html2pdf()
-
-        .set(opciones)
-
-        .from(documento)
-
-        .save()
-
-        .finally(
-            () => {
-
-                document.body.classList.remove(
-                    "generando-pdf"
-                );
+                return;
 
             }
-        );
+
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+
+            script.src =
+                "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+
+
+            script.onload =
+                function() {
+
+                    resolve();
+
+                };
+
+
+            script.onerror =
+                function() {
+
+                    reject(
+                        new Error(
+                            "No se pudo cargar html2pdf.js"
+                        )
+                    );
+
+                };
+
+
+            document.body.appendChild(
+                script
+            );
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   INICIO
+   DESCARGAR PDF
+========================================================= */
+
+async function descargarPDF() {
+
+    const boton =
+        $("#descargarPDF");
+
+
+    const textoOriginal =
+        boton.innerHTML;
+
+
+    try {
+
+        boton.disabled =
+            true;
+
+
+        boton.innerHTML =
+            "Preparando PDF...";
+
+
+        /*
+           html2pdf se carga
+           RECIÉN AHORA.
+        */
+
+        if (
+            typeof html2pdf ===
+            "undefined"
+        ) {
+
+            await cargarHtml2Pdf();
+
+        }
+
+
+        const documento =
+            document.getElementById(
+                "documento"
+            );
+
+
+        let numero =
+            $("#numeroOC")
+                .value
+                .trim();
+
+
+        if (!numero) {
+
+            numero =
+                "SinNumero";
+
+        }
+
+
+        const opciones = {
+
+            margin: 0,
+
+            filename:
+                "Orden_de_Compra_" +
+                numero +
+                ".pdf",
+
+            image: {
+
+                type: "jpeg",
+
+                quality: 0.98
+
+            },
+
+            html2canvas: {
+
+                scale: 2,
+
+                useCORS: true,
+
+                allowTaint: true,
+
+                backgroundColor:
+                    "#ffffff",
+
+                logging: false
+
+            },
+
+            jsPDF: {
+
+                unit: "mm",
+
+                format: "a4",
+
+                orientation:
+                    "portrait"
+
+            },
+
+            pagebreak: {
+
+                mode: [
+                    "css",
+                    "legacy"
+                ],
+
+                avoid: [
+                    "tr",
+                    ".firmas",
+                    ".texto-legal"
+                ]
+
+            }
+
+        };
+
+
+        await html2pdf()
+
+            .set(
+                opciones
+            )
+
+            .from(
+                documento
+            )
+
+            .save();
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error al generar PDF:",
+            error
+        );
+
+
+        alert(
+            "No se pudo generar el PDF.\n\n" +
+            "Revisá tu conexión a Internet " +
+            "e intentá nuevamente."
+        );
+
+    }
+
+    finally {
+
+        boton.disabled =
+            false;
+
+
+        boton.innerHTML =
+            textoOriginal;
+
+    }
+
+}
+
+
+/* =========================================================
+   INICIO DE LA APLICACIÓN
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    function() {
 
-
-        /* ---------------------------------
-           FECHA
-        --------------------------------- */
+        /*
+           FECHA AUTOMÁTICA
+        */
 
         $("#fecha").value =
             fechaHoy();
 
 
         /*
-           IMPORTANTE:
+           MUY IMPORTANTE:
 
-           SOLO UN RENGLÓN AL ABRIR.
+           AL ABRIR HAY SOLAMENTE
+           UN RENGLÓN.
         */
 
         $("#renglones")
@@ -1215,7 +1466,8 @@ document.addEventListener(
 
 
         /*
-           SOLO UNA PARTIDA AL ABRIR.
+           Y UNA SOLA PARTIDA
+           EN EL ANEXO.
         */
 
         $("#partidas")
@@ -1269,7 +1521,7 @@ document.addEventListener(
 
 
         /*
-           DATOS GENERALES
+           CAMPOS GENERALES
         */
 
         $("#fecha")
