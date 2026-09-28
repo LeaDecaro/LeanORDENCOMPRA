@@ -1,4 +1,3 @@
-```css
 * {
     box-sizing: border-box;
 }
@@ -6,265 +5,239 @@
 body {
     margin: 0;
     background: #eef1f5;
-    font-family: Arial, Helvetica, sans-serif;
     color: #222;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .app {
-    max-width: 1250px;
-    margin: auto;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 25px;
 }
 
-.app-header {
-    background: #ffffff;
-    border: 1px solid #d7dce2;
-    padding: 22px 28px;
+.encabezado-app {
+    background: white;
+    border: 1px solid #d5d9df;
+    padding: 25px;
     margin-bottom: 20px;
 }
 
-.app-header h1 {
+.encabezado-app h1 {
     margin: 0;
     font-size: 28px;
-    font-weight: 700;
 }
 
-.app-header p {
-    margin: 7px 0 0;
+.encabezado-app p {
+    margin: 8px 0 3px;
     font-size: 16px;
 }
 
-.app-header span {
+.encabezado-app span {
     color: #666;
     font-size: 14px;
 }
 
 .panel {
-    background: #ffffff;
-    border: 1px solid #d7dce2;
+    background: white;
+    border: 1px solid #d5d9df;
     padding: 22px;
     margin-bottom: 20px;
 }
 
 .panel h2 {
-    margin: 0 0 18px;
-    font-size: 20px;
+    margin-top: 0;
 }
 
-.form-grid {
+.datos-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
 
-.campo {
+.datos-grid div {
     display: flex;
     flex-direction: column;
-    gap: 6px;
 }
 
-.campo label {
+label {
+    font-weight: bold;
     font-size: 13px;
-    font-weight: 700;
+    margin-bottom: 6px;
 }
 
 input,
-textarea,
-select {
+textarea {
     width: 100%;
-    border: 1px solid #c8ced6;
+    border: 1px solid #c7ccd3;
     border-radius: 5px;
     padding: 10px;
-    font-family: inherit;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
-    background: #fff;
 }
 
-textarea {
-    resize: vertical;
-}
-
-.section-title {
+.titulo-renglones {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     gap: 20px;
-    margin-bottom: 18px;
 }
 
-.section-title h2 {
-    margin-bottom: 5px;
-}
-
-.section-title p {
-    margin: 0;
+.titulo-renglones p {
+    margin-top: -10px;
     color: #777;
     font-size: 13px;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-pdf {
+button {
     border: 0;
     border-radius: 6px;
     padding: 11px 18px;
-    font-weight: 700;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.btn-primary {
-    background: #1d5fbf;
+.btn-agregar {
+    background: #1769c2;
     color: white;
 }
 
-.btn-secondary {
-    background: #555;
-    color: white;
-}
-
-.btn-pdf {
-    background: #1c7c43;
-    color: white;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover,
-.btn-pdf:hover {
-    opacity: 0.9;
+.btn-agregar:hover {
+    background: #12559e;
 }
 
 .renglon {
-    border: 1px solid #d7dce2;
+    border: 1px solid #d5d9df;
+    background: #fafafa;
     padding: 16px;
-    margin-bottom: 12px;
+    margin-top: 14px;
     border-radius: 6px;
-    background: #fafbfc;
 }
 
-.renglon-header {
+.renglon-cabecera {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 12px;
 }
 
-.renglon-numero {
-    font-weight: 700;
-    font-size: 15px;
+.numero-renglon {
+    font-weight: bold;
 }
 
 .btn-eliminar {
-    border: 0;
     background: #c62828;
     color: white;
-    border-radius: 5px;
-    padding: 7px 10px;
-    cursor: pointer;
+    padding: 7px 12px;
     font-size: 12px;
 }
 
-.renglon-grid {
+.campos-renglon {
     display: grid;
-    grid-template-columns: 1fr 110px 150px 150px;
+    grid-template-columns: 1fr 100px 160px 160px;
     gap: 12px;
 }
 
-.acciones {
+.importe {
+    background: #eee;
+}
+
+.botones {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin-bottom: 30px;
 }
 
-.preview-container {
+.btn-vista {
+    background: #555;
+    color: white;
+}
+
+.btn-pdf {
+    background: #188348;
+    color: white;
+}
+
+.zona-preview {
     display: none;
 }
 
-.documento {
+#documentoPDF {
     background: white;
-    width: 210mm;
-    min-height: 297mm;
-    margin: auto;
-    padding: 15mm;
-    color: #000;
 }
 
 
 /* =========================
-   DOCUMENTO PDF
+   DOCUMENTO
 ========================= */
 
-.pdf-hoja {
-    width: 180mm;
-    min-height: 267mm;
-    position: relative;
+.hoja-pdf {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto 20px;
     background: white;
+    color: black;
+    position: relative;
+    page-break-after: always;
 }
 
-.pdf-encabezado {
-    border-bottom: 2px solid #000;
+.encabezado-pdf {
+    border-bottom: 2px solid black;
     padding-bottom: 8px;
     margin-bottom: 12px;
 }
 
-.pdf-organismo {
+.organismo {
     font-size: 13px;
-    font-weight: 700;
+    font-weight: bold;
 }
 
-.pdf-provincia {
-    font-size: 12px;
+.provincia {
+    font-size: 11px;
 }
 
-.pdf-titulo {
+.titulo-pdf {
     text-align: center;
-    margin: 14px 0;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: bold;
+    margin: 15px 0;
 }
 
-.pdf-datos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border: 1px solid #000;
+.datos-pdf {
+    width: 100%;
+    border-collapse: collapse;
     margin-bottom: 12px;
-}
-
-.pdf-dato {
-    padding: 6px 8px;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
     font-size: 10px;
 }
 
-.pdf-dato:nth-child(2n) {
-    border-right: 0;
+.datos-pdf td {
+    border: 1px solid black;
+    padding: 6px;
+    width: 50%;
 }
 
-.pdf-label {
-    font-weight: 700;
-}
-
-.tabla {
+.tabla-pdf {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
     font-size: 9px;
 }
 
-.tabla th,
-.tabla td {
-    border: 1px solid #000;
+.tabla-pdf th,
+.tabla-pdf td {
+    border: 1px solid black;
     padding: 5px;
     vertical-align: top;
 }
 
-.tabla th {
+.tabla-pdf th {
     text-align: center;
-    font-weight: 700;
+    font-weight: bold;
 }
 
-.col-renglon {
+.col-numero {
     width: 9%;
     text-align: center;
 }
@@ -288,27 +261,26 @@ textarea {
     text-align: right;
 }
 
-.total {
+.total-pdf {
     margin-top: 12px;
-    display: flex;
-    justify-content: flex-end;
+    text-align: right;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: bold;
 }
 
-.pdf-observaciones {
+.observaciones-pdf {
     margin-top: 20px;
-    border: 1px solid #000;
+    border: 1px solid black;
     padding: 8px;
     font-size: 10px;
 }
 
-.pdf-pie {
+.pie-pdf {
     margin-top: 25px;
-    border-top: 1px solid #000;
+    border-top: 1px solid black;
     padding-top: 8px;
-    font-size: 9px;
     text-align: center;
+    font-size: 9px;
 }
 
 
@@ -322,25 +294,33 @@ textarea {
         padding: 10px;
     }
 
-    .form-grid {
+    .datos-grid {
         grid-template-columns: 1fr;
     }
 
-    .renglon-grid {
+    .campos-renglon {
         grid-template-columns: 1fr;
     }
 
-    .section-title {
+    .titulo-renglones {
+        flex-direction: column;
         align-items: flex-start;
-        flex-direction: column;
     }
 
-    .acciones {
-        flex-direction: column;
-    }
-
-    .acciones button {
+    .btn-agregar {
         width: 100%;
     }
+
+    .botones {
+        flex-direction: column;
+    }
+
+    .botones button {
+        width: 100%;
+    }
+
+    .hoja-pdf {
+        width: 100%;
+        min-height: auto;
+    }
 }
-```
