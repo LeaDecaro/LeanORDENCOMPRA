@@ -1,653 +1,989 @@
-let numeroRenglon = 0;
+const $ = (selector, root = document) =>
+  root.querySelector(selector);
+
+const $$ = (selector, root = document) =>
+  [...root.querySelectorAll(selector)];
 
 
-/* ================================
-   CUANDO CARGA LA PÁGINA
-================================ */
+/* =========================
+   DINERO
+========================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+function moneyNumber(value) {
 
-    agregarRenglon();
+  if (typeof value !== "string") {
+    return Number(value) || 0;
+  }
 
-    document
-        .getElementById("btnAgregar")
-        .addEventListener("click", function () {
-            agregarRenglon();
-        });
+  value = value
+    .trim()
+    .replace(/\$/g, "")
+    .replace(/\s/g, "");
 
-    document
-        .getElementById("btnVistaPrevia")
-        .addEventListener("click", function () {
-            mostrarVistaPrevia();
-        });
+  if (value.includes(",") && value.includes(".")) {
+    value = value
+      .replace(/\./g, "")
+      .replace(",", ".");
+  }
+  else if (value.includes(",")) {
+    value = value.replace(",", ".");
+  }
 
-    document
-        .getElementById("btnPDF")
-        .addEventListener("click", function () {
-            descargarPDF();
-        });
-
-});
+  return Number(value) || 0;
+}
 
 
-/* ================================
-   AGREGAR RENGLÓN
-================================ */
+function formatMoney(number) {
 
-function agregarRenglon() {
+  return new Intl.NumberFormat("es-AR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(number || 0);
 
-    numeroRenglon++;
+}
 
-    const contenedor =
-        document.getElementById("listaRenglones");
 
-    const renglon =
-        document.createElement("div");
+/* =========================
+   NUMEROS EN LETRAS
+========================= */
 
-    renglon.className = "renglon";
+function numberToWords(number) {
 
-    renglon.innerHTML = `
+  number = Math.floor(Math.abs(number || 0));
 
-        <div class="renglon-cabecera">
+  if (number === 0) {
+    return "cero";
+  }
 
-            <span class="numero-renglon">
-                Renglón ${numeroRenglon}
-            </span>
+  const units = [
+    "",
+    "uno",
+    "dos",
+    "tres",
+    "cuatro",
+    "cinco",
+    "seis",
+    "siete",
+    "ocho",
+    "nueve",
+    "diez",
+    "once",
+    "doce",
+    "trece",
+    "catorce",
+    "quince",
+    "dieciséis",
+    "diecisiete",
+    "dieciocho",
+    "diecinueve",
+    "veinte"
+  ];
 
-            ${
-                numeroRenglon > 1
-                ?
-                `<button
-                    type="button"
-                    class="btn-eliminar">
-                    Eliminar
-                </button>`
-                :
-                ""
-            }
+  const tens = [
+    "",
+    "",
+    "veinte",
+    "treinta",
+    "cuarenta",
+    "cincuenta",
+    "sesenta",
+    "setenta",
+    "ochenta",
+    "noventa"
+  ];
+
+  const hundreds = [
+    "",
+    "ciento",
+    "doscientos",
+    "trescientos",
+    "cuatrocientos",
+    "quinientos",
+    "seiscientos",
+    "setecientos",
+    "ochocientos",
+    "novecientos"
+  ];
+
+
+  function under1000(number) {
+
+    if (number <= 20) {
+      return units[number];
+    }
+
+    if (number < 100) {
+
+      if (number % 10 === 0) {
+        return tens[number / 10];
+      }
+
+      if (number < 30) {
+        return "veinti" + units[number - 20];
+      }
+
+      return (
+        tens[Math.floor(number / 10)] +
+        " y " +
+        units[number % 10]
+      );
+    }
+
+    if (number === 100) {
+      return "cien";
+    }
+
+    if (number < 200) {
+      return "ciento " + under1000(number - 100);
+    }
+
+    return (
+      hundreds[Math.floor(number / 100)] +
+      (number % 100
+        ? " " + under1000(number % 100)
+        : "")
+    );
+  }
+
+
+  function group(number, label, singular) {
+
+    if (!number) {
+      return "";
+    }
+
+    if (number === 1) {
+      return singular;
+    }
+
+    return under1000(number) + " " + label;
+  }
+
+
+  const parts = [];
+
+  const millions =
+    Math.floor(number / 1000000);
+
+  number %= 1000000;
+
+  const thousands =
+    Math.floor(number / 1000);
+
+  number %= 1000;
+
+
+  if (millions) {
+    parts.push(
+      group(
+        millions,
+        "millones",
+        "un millón"
+      )
+    );
+  }
+
+
+  if (thousands) {
+
+    if (thousands === 1) {
+      parts.push("mil");
+    }
+    else {
+      parts.push(
+        under1000(thousands) + " mil"
+      );
+    }
+  }
+
+
+  if (number) {
+    parts.push(
+      under1000(number)
+    );
+  }
+
+
+  return parts.join(" ");
+}
+
+
+function pluralPeso(number) {
+
+  return number === 1
+    ? "peso"
+    : "pesos";
+
+}
+
+
+/* =========================
+   TOTAL GENERAL
+========================= */
+
+function totalRows() {
+
+  return $$(".main-row").reduce(
+    (sum, row) => {
+
+      return (
+        sum +
+        (
+          moneyNumber(
+            $(".row-total", row).value
+          ) || 0
+        )
+      );
+
+    },
+    0
+  );
+
+}
+
+
+function updateTotals() {
+
+  let total = 0;
+
+
+  $$(".main-row").forEach(row => {
+
+    const quantity =
+      moneyNumber(
+        $(".row-qty", row).value
+      );
+
+    const price =
+      moneyNumber(
+        $(".row-price", row).value
+      );
+
+    const rowTotal =
+      quantity * price;
+
+
+    $(".row-total", row).value =
+      formatMoney(rowTotal);
+
+
+    total += rowTotal;
+
+  });
+
+
+  $("#totalGeneral").textContent =
+    formatMoney(total);
+
+
+  $("#totalLetras").textContent =
+    numberToWords(total) +
+    " " +
+    pluralPeso(total);
+
+
+  $("#compromisoActual").textContent =
+    formatMoney(total);
+
+
+  updateDeliveries();
+  updateDetails();
+  syncBudgetMonto();
+
+}
+
+
+/* =========================
+   NUMERAR RENGLONES
+========================= */
+
+function renumber(
+  container,
+  selector = ".main-row"
+) {
+
+  $$(selector, container).forEach(
+    (row, index) => {
+
+      const number = index + 1;
+
+      $(".row-number", row)
+        .textContent = number;
+
+      row.dataset.renglon =
+        number;
+
+    }
+  );
+
+}
+
+
+/* =========================
+   CREAR RENGLON
+========================= */
+
+function makeMainRow() {
+
+  const row =
+    document.createElement("tr");
+
+
+  row.className =
+    "main-row";
+
+  row.dataset.renglon =
+    "1";
+
+
+  row.innerHTML = `
+
+    <td class="row-number">
+      1
+    </td>
+
+    <td>
+      <input
+        class="row-qty numeric"
+        type="number"
+        min="0"
+        step="any"
+        value=""
+      >
+    </td>
+
+    <td>
+
+      <div class="item-area">
+
+        <div class="row-tools no-print">
+
+          <button
+            type="button"
+            class="btn-delete-row"
+          >
+            Eliminar
+          </button>
 
         </div>
 
+        <textarea
+          class="item-description"
+          placeholder=""
+        ></textarea>
 
-        <div class="campos-renglon">
+        <input
+          class="item-brand"
+          placeholder="Marca: "
+        >
 
-            <div>
-                <label>Descripción</label>
+      </div>
 
-                <input
-                    type="text"
-                    class="descripcion"
-                    placeholder="Descripción del bien o servicio">
-            </div>
+    </td>
 
+    <td>
 
-            <div>
-                <label>Cantidad</label>
+      <input
+        class="row-period numeric"
+        value=""
+      >
 
-                <input
-                    type="number"
-                    class="cantidad"
-                    value="1"
-                    min="0"
-                    step="any">
-            </div>
+    </td>
 
+    <td>
 
-            <div>
-                <label>Precio unitario</label>
+      <input
+        class="row-price money numeric"
+        inputmode="decimal"
+        placeholder="0,00"
+      >
 
-                <input
-                    type="number"
-                    class="precio"
-                    value="0"
-                    min="0"
-                    step="0.01">
-            </div>
+    </td>
 
+    <td>
 
-            <div>
-                <label>Importe</label>
+      <input
+        class="row-total money numeric"
+        value="0,00"
+        readonly
+      >
 
-                <input
-                    type="text"
-                    class="importe"
-                    value="$ 0,00"
-                    readonly>
-            </div>
+    </td>
 
-        </div>
-    `;
+  `;
 
 
-    contenedor.appendChild(renglon);
+  $(
+    ".row-qty",
+    row
+  ).addEventListener(
+    "input",
+    updateTotals
+  );
 
 
-    /* Cálculo automático */
-
-    const cantidad =
-        renglon.querySelector(".cantidad");
-
-    const precio =
-        renglon.querySelector(".precio");
-
-    const importe =
-        renglon.querySelector(".importe");
+  $(
+    ".row-price",
+    row
+  ).addEventListener(
+    "input",
+    updateTotals
+  );
 
 
-    function calcular() {
-
-        const c =
-            parseFloat(cantidad.value) || 0;
-
-        const p =
-            parseFloat(precio.value) || 0;
-
-        const resultado = c * p;
-
-        importe.value =
-            formatearMoneda(resultado);
-    }
+  $(
+    ".btn-delete-row",
+    row
+  ).addEventListener(
+    "click",
+    () =>
+      removeMainRow(
+        $(".btn-delete-row", row)
+      )
+  );
 
 
-    cantidad.addEventListener("input", calcular);
-
-    precio.addEventListener("input", calcular);
-
-
-    /* Botón eliminar */
-
-    const botonEliminar =
-        renglon.querySelector(".btn-eliminar");
-
-
-    if (botonEliminar) {
-
-        botonEliminar.addEventListener(
-            "click",
-            function () {
-
-                renglon.remove();
-
-                renumerarRenglones();
-
-            }
-        );
-
-    }
+  return row;
 
 }
 
 
-/* ================================
-   RENUMERAR
-================================ */
+/* =========================
+   AGREGAR RENGLON
+========================= */
 
-function renumerarRenglones() {
+function addMainRow() {
 
-    const renglones =
-        document.querySelectorAll(".renglon");
+  const tbody =
+    $("#renglones");
+
+  const row =
+    makeMainRow();
 
 
-    renglones.forEach(function (renglon, indice) {
+  tbody.appendChild(row);
 
-        const numero =
-            indice + 1;
+  renumber(tbody);
 
-        renglon.querySelector(
-            ".numero-renglon"
-        ).textContent =
-            "Renglón " + numero;
-
-    });
+  updateTotals();
 
 }
 
 
-/* ================================
-   VISTA PREVIA
-================================ */
+/* =========================
+   ELIMINAR RENGLON
+========================= */
 
-function mostrarVistaPrevia() {
+function removeMainRow(button) {
 
-    const contenedor =
-        document.getElementById("documentoPDF");
-
-    contenedor.innerHTML =
-        construirDocumento();
+  const rows =
+    $$(".main-row");
 
 
-    document.getElementById(
-        "zonaPreview"
-    ).style.display = "block";
+  if (rows.length === 1) {
+    return;
+  }
 
 
-    document.getElementById(
-        "zonaPreview"
-    ).scrollIntoView({
-        behavior: "smooth"
-    });
+  button
+    .closest("tr")
+    .remove();
+
+
+  renumber(
+    $("#renglones")
+  );
+
+
+  updateTotals();
 
 }
 
 
-/* ================================
-   CONSTRUIR DOCUMENTO
-================================ */
+/* =========================
+   CRONOGRAMA DE ENTREGAS
+========================= */
 
-function construirDocumento() {
+function updateDeliveries() {
 
-    const numeroOrden =
-        obtenerValor("numeroOrden");
+  const body =
+    $("#entregas");
 
-    const fecha =
-        obtenerValor("fechaOrden");
+  const existing =
+    [...body.querySelectorAll("tr")];
 
-    const expediente =
-        obtenerValor("expediente");
-
-    const proveedor =
-        obtenerValor("proveedor");
-
-    const cuit =
-        obtenerValor("cuit");
-
-    const destino =
-        obtenerValor("destino");
-
-    const observaciones =
-        obtenerValor("observaciones");
+  const rows =
+    $$(".main-row");
 
 
-    const renglones =
-        document.querySelectorAll(".renglon");
+  while (
+    existing.length > rows.length
+  ) {
+
+    existing.pop().remove();
+
+  }
 
 
-    let filas = "";
+  rows.forEach(
+    (main, index) => {
 
-    let total = 0;
-
-
-    renglones.forEach(function (renglon, indice) {
-
-        const descripcion =
-            renglon.querySelector(
-                ".descripcion"
-            ).value || "-";
+      let tr =
+        body.querySelectorAll("tr")[index];
 
 
-        const cantidad =
-            parseFloat(
-                renglon.querySelector(
-                    ".cantidad"
-                ).value
-            ) || 0;
+      if (!tr) {
+
+        tr =
+          document.createElement("tr");
 
 
-        const precio =
-            parseFloat(
-                renglon.querySelector(
-                    ".precio"
-                ).value
-            ) || 0;
+        tr.innerHTML = `
 
+          <td class="delivery-number"></td>
 
-        const importe =
-            cantidad * precio;
+          <td>
+            <input
+              class="delivery-qty"
+              type="number"
+              min="0"
+              step="any"
+            >
+          </td>
 
+          <td>
+            <input
+              class="delivery-deadline"
+            >
+          </td>
 
-        total += importe;
-
-
-        filas += `
-
-            <tr>
-
-                <td class="col-numero">
-                    ${indice + 1}
-                </td>
-
-                <td class="col-descripcion">
-                    ${escaparHTML(descripcion)}
-                </td>
-
-                <td class="col-cantidad">
-                    ${cantidad}
-                </td>
-
-                <td class="col-precio">
-                    ${formatearMoneda(precio)}
-                </td>
-
-                <td class="col-importe">
-                    ${formatearMoneda(importe)}
-                </td>
-
-            </tr>
+          <td>
+            <textarea
+              class="delivery-place"
+              placeholder=""
+            ></textarea>
+          </td>
 
         `;
 
+
+        body.appendChild(tr);
+
+      }
+
+
+      $(".delivery-number", tr)
+        .textContent =
+        index + 1;
+
+
+      $(".delivery-qty", tr)
+        .value =
+        $(".row-qty", main).value;
+
+    }
+  );
+
+}
+
+
+/* =========================
+   DETALLE DEL ANEXO
+========================= */
+
+function updateDetails() {
+
+  const body =
+    $("#detalles");
+
+  const rows =
+    $$(".main-row");
+
+  const existing =
+    [...body.querySelectorAll("tr")];
+
+
+  while (
+    existing.length > rows.length
+  ) {
+
+    existing.pop().remove();
+
+  }
+
+
+  rows.forEach(
+    (main, index) => {
+
+      let tr =
+        body.querySelectorAll("tr")[index];
+
+
+      if (!tr) {
+
+        tr =
+          document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+          <td class="detail-number"></td>
+
+          <td>
+
+            <div class="detail-main"></div>
+
+            <div class="detail-separator">
+              ------------------------------------Detalle---------------------------------------
+            </div>
+
+            <textarea
+              class="delivery-detail"
+              placeholder=""
+            ></textarea>
+
+          </td>
+
+        `;
+
+
+        body.appendChild(tr);
+
+      }
+
+
+      $(".detail-number", tr)
+        .textContent =
+        index + 1;
+
+
+      const description =
+        $(".item-description", main)
+          .value
+          .trim();
+
+
+      const brand =
+        $(".item-brand", main)
+          .value
+          .trim();
+
+
+      $(".detail-main", tr)
+        .textContent =
+        description +
+        (
+          brand
+            ? "\n" + brand
+            : ""
+        );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   PARTIDAS PRESUPUESTARIAS
+========================= */
+
+function addBudgetRow() {
+
+  const tr =
+    document.createElement("tr");
+
+
+  const names = [
+    "Ejer",
+    "Juri",
+    "SA",
+    "Unor",
+    "Cpn1",
+    "Cpn2",
+    "Cpn3",
+    "Fina",
+    "Func",
+    "SFunc",
+    "INC",
+    "Ppal",
+    "Ppar",
+    "Spar",
+    "Fufi",
+    "Ubge"
+  ];
+
+
+  tr.innerHTML =
+    names
+      .map(
+        (_, index) =>
+          `
+          <td>
+            <input
+              class="budget-field"
+              data-index="${index}"
+            >
+          </td>
+          `
+      )
+      .join("") +
+
+      `
+
+      <td>
+
+        <input
+          class="budget-monto money"
+          value="0,00"
+          readonly
+        >
+
+      </td>
+
+      `;
+
+
+  $("#partidas")
+    .appendChild(tr);
+
+
+  syncBudgetMonto();
+
+}
+
+
+/* =========================
+   MONTO DEL ANEXO
+========================= */
+
+function syncBudgetMonto() {
+
+  $$("#partidas .budget-monto")
+    .forEach(input => {
+
+      input.value =
+        formatMoney(
+          totalRows()
+        );
+
     });
 
-
-    const fechaFormateada =
-        convertirFecha(fecha);
+}
 
 
-    return `
+/* =========================
+   CAMPOS COMUNES
+========================= */
 
-        <div class="hoja-pdf">
+function copyCommonFields() {
 
+  const fecha =
+    $("#fechaEmision").value;
 
-            <div class="encabezado-pdf">
-
-                <div class="organismo">
-                    Ministerio de Juventud, Deportes y Cultura
-                </div>
-
-                <div class="provincia">
-                    Provincia del Neuquén
-                </div>
-
-            </div>
+  const numero =
+    $("#numeroOC").value;
 
 
-            <div class="titulo-pdf">
-                ORDEN DE COMPRA
-            </div>
+  $$(
+    '[data-copy="fechaEmision"]'
+  ).forEach(element => {
+
+    element.value =
+      fecha;
+
+  });
 
 
-            <table class="datos-pdf">
+  $$(
+    '[data-copy="numeroOC"]'
+  ).forEach(element => {
 
-                <tr>
+    element.value =
+      numero;
 
-                    <td>
-                        <strong>N° Orden:</strong>
-                        ${escaparHTML(numeroOrden || "-")}
-                    </td>
-
-                    <td>
-                        <strong>Fecha:</strong>
-                        ${fechaFormateada || "-"}
-                    </td>
-
-                </tr>
+  });
 
 
-                <tr>
+  $(".print-date");
 
-                    <td>
-                        <strong>Expediente:</strong>
-                        ${escaparHTML(expediente || "-")}
-                    </td>
+  $$(".print-date")
+    .forEach(element => {
 
-                    <td>
-                        <strong>Proveedor:</strong>
-                        ${escaparHTML(proveedor || "-")}
-                    </td>
+      element.textContent =
+        fecha;
 
-                </tr>
-
-
-                <tr>
-
-                    <td>
-                        <strong>CUIT:</strong>
-                        ${escaparHTML(cuit || "-")}
-                    </td>
-
-                    <td>
-                        <strong>Destino:</strong>
-                        ${escaparHTML(destino || "-")}
-                    </td>
-
-                </tr>
-
-            </table>
-
-
-            <table class="tabla-pdf">
-
-                <thead>
-
-                    <tr>
-
-                        <th class="col-numero">
-                            Renglón
-                        </th>
-
-                        <th class="col-descripcion">
-                            Descripción
-                        </th>
-
-                        <th class="col-cantidad">
-                            Cantidad
-                        </th>
-
-                        <th class="col-precio">
-                            Precio unitario
-                        </th>
-
-                        <th class="col-importe">
-                            Importe
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    ${filas}
-
-                </tbody>
-
-            </table>
-
-
-            <div class="total-pdf">
-
-                TOTAL:
-                ${formatearMoneda(total)}
-
-            </div>
-
-
-            <div class="observaciones-pdf">
-
-                <strong>Observaciones:</strong>
-
-                <br><br>
-
-                ${escaparHTML(
-                    observaciones || "-"
-                )}
-
-            </div>
-
-
-            <div class="pie-pdf">
-
-                Orden de Compra — Provincia del Neuquén
-
-            </div>
-
-
-        </div>
-
-    `;
+    });
 
 }
 
 
-/* ================================
-   DESCARGAR PDF
-================================ */
+/* =========================
+   FECHA ACTUAL
+========================= */
 
-function descargarPDF() {
+function setToday() {
 
-    mostrarVistaPrevia();
-
-
-    const documento =
-        document.getElementById("documentoPDF");
+  const date =
+    new Date();
 
 
-    if (
-        typeof html2pdf === "undefined"
-    ) {
+  const value =
+    String(
+      date.getDate()
+    ).padStart(2, "0") +
 
-        alert(
-            "No se pudo cargar el generador de PDF. Revisá la conexión a Internet."
-        );
+    "/" +
 
-        return;
-    }
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0") +
+
+    "/" +
+
+    date.getFullYear();
 
 
-    const opciones = {
+  $("#fechaEmision").value =
+    value;
 
-        margin: 0,
 
-        filename:
-            obtenerNombreArchivo(),
+  $("#fechaImpresion").value =
+    value;
 
-        image: {
-            type: "jpeg",
-            quality: 0.98
-        },
 
-        html2canvas: {
+  copyCommonFields();
 
-            scale: 2,
+}
 
-            useCORS: true,
 
-            logging: false
+/* =========================
+   PROVEEDOR
+========================= */
 
-        },
+function syncProviderAndMeta() {
 
-        jsPDF: {
+  const provider =
+    $(".provider-inline")?.value || "";
 
-            unit: "mm",
 
-            format: "a4",
+  $$(".page-3 .provider-inline, .page-4 .provider-inline")
+    .forEach(
+      (element, index) => {
 
-            orientation: "portrait"
-
-        },
-
-        pagebreak: {
-
-            mode: [
-                "css",
-                "legacy"
-            ]
-
+        if (index > 0) {
+          element.value =
+            provider;
         }
 
-    };
-
-
-    html2pdf()
-
-        .set(opciones)
-
-        .from(documento)
-
-        .save();
-
-}
-
-
-/* ================================
-   FUNCIONES AUXILIARES
-================================ */
-
-function obtenerValor(id) {
-
-    const elemento =
-        document.getElementById(id);
-
-    if (!elemento) {
-        return "";
-    }
-
-    return elemento.value.trim();
-
-}
-
-
-function convertirFecha(fecha) {
-
-    if (!fecha) {
-        return "";
-    }
-
-
-    const partes =
-        fecha.split("-");
-
-
-    if (partes.length !== 3) {
-        return fecha;
-    }
-
-
-    return (
-        partes[2] +
-        "/" +
-        partes[1] +
-        "/" +
-        partes[0]
+      }
     );
 
 }
 
 
-function formatearMoneda(valor) {
+/* =========================
+   INICIO
+========================= */
 
-    return valor.toLocaleString(
-        "es-AR",
-        {
-            style: "currency",
-            currency: "ARS"
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    setToday();
+
+
+    /* SOLO UN RENGLÓN INICIAL */
+
+    addMainRow();
+
+
+    /* SOLO UNA PARTIDA INICIAL */
+
+    addBudgetRow();
+
+
+    /* BOTONES */
+
+    $("#btnAgregarRenglon")
+      .addEventListener(
+        "click",
+        addMainRow
+      );
+
+
+    $("#btnAgregarAnexo")
+      .addEventListener(
+        "click",
+        addBudgetRow
+      );
+
+
+    /* CAMPOS COMUNES */
+
+    $("#fechaEmision")
+      .addEventListener(
+        "input",
+        copyCommonFields
+      );
+
+
+    $("#numeroOC")
+      .addEventListener(
+        "input",
+        copyCommonFields
+      );
+
+
+    /* CAMBIOS GENERALES */
+
+    document.addEventListener(
+      "input",
+      event => {
+
+        if (
+          event.target.matches(
+            ".row-qty, .row-price"
+          )
+        ) {
+
+          updateTotals();
+
         }
+
+
+        if (
+          event.target.matches(
+            ".budget-field"
+          )
+        ) {
+
+          syncBudgetMonto();
+
+        }
+
+
+        if (
+          event.target.matches(
+            ".provider-inline"
+          )
+        ) {
+
+          syncProviderAndMeta();
+
+        }
+
+      }
     );
 
-}
 
+    /* ESTADO INICIAL */
 
-function escaparHTML(texto) {
+    updateTotals();
 
-    return String(texto)
+    updateDeliveries();
 
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    updateDetails();
 
-}
-
-
-function obtenerNombreArchivo() {
-
-    const numero =
-        obtenerValor("numeroOrden");
-
-
-    if (numero) {
-
-        return (
-            "Orden_de_Compra_" +
-            numero +
-            ".pdf"
-        );
-
-    }
-
-
-    return "Orden_de_Compra.pdf";
-
-}
+  }
+);
