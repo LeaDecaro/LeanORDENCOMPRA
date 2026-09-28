@@ -1,989 +1,1309 @@
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
+/* =========================================================
+   ORDEN DE COMPRA - SAFIPRO
+========================================================= */
 
 
-/* =========================
-   DINERO
-========================= */
+/* =========================================================
+   UTILIDADES
+========================================================= */
 
-function moneyNumber(value) {
-
-  if (typeof value !== "string") {
-    return Number(value) || 0;
-  }
-
-  value = value
-    .trim()
-    .replace(/\$/g, "")
-    .replace(/\s/g, "");
-
-  if (value.includes(",") && value.includes(".")) {
-    value = value
-      .replace(/\./g, "")
-      .replace(",", ".");
-  }
-  else if (value.includes(",")) {
-    value = value.replace(",", ".");
-  }
-
-  return Number(value) || 0;
+function $(selector) {
+    return document.querySelector(selector);
 }
 
 
-function formatMoney(number) {
+function $all(selector) {
+    return Array.from(
+        document.querySelectorAll(selector)
+    );
+}
 
-  return new Intl.NumberFormat("es-AR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(number || 0);
+
+/* =========================================================
+   FORMATO DE DINERO
+========================================================= */
+
+function parseMoney(value) {
+
+    if (value === null || value === undefined) {
+        return 0;
+    }
+
+    let texto = String(value)
+        .trim()
+        .replace(/\$/g, "")
+        .replace(/\s/g, "");
+
+    if (!texto) {
+        return 0;
+    }
+
+
+    /*
+       Si viene como:
+       100.000,50
+    */
+
+    if (
+        texto.includes(".") &&
+        texto.includes(",")
+    ) {
+
+        texto =
+            texto
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+    }
+
+    /*
+       Si viene como:
+       100,50
+    */
+
+    else if (texto.includes(",")) {
+
+        texto =
+            texto.replace(",", ".");
+
+    }
+
+
+    const numero =
+        Number(texto);
+
+
+    return Number.isFinite(numero)
+        ? numero
+        : 0;
 
 }
 
 
-/* =========================
-   NUMEROS EN LETRAS
-========================= */
+function money(number) {
 
-function numberToWords(number) {
+    return new Intl.NumberFormat(
+        "es-AR",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    ).format(
+        Number(number) || 0
+    );
 
-  number = Math.floor(Math.abs(number || 0));
-
-  if (number === 0) {
-    return "cero";
-  }
-
-  const units = [
-    "",
-    "uno",
-    "dos",
-    "tres",
-    "cuatro",
-    "cinco",
-    "seis",
-    "siete",
-    "ocho",
-    "nueve",
-    "diez",
-    "once",
-    "doce",
-    "trece",
-    "catorce",
-    "quince",
-    "dieciséis",
-    "diecisiete",
-    "dieciocho",
-    "diecinueve",
-    "veinte"
-  ];
-
-  const tens = [
-    "",
-    "",
-    "veinte",
-    "treinta",
-    "cuarenta",
-    "cincuenta",
-    "sesenta",
-    "setenta",
-    "ochenta",
-    "noventa"
-  ];
-
-  const hundreds = [
-    "",
-    "ciento",
-    "doscientos",
-    "trescientos",
-    "cuatrocientos",
-    "quinientos",
-    "seiscientos",
-    "setecientos",
-    "ochocientos",
-    "novecientos"
-  ];
+}
 
 
-  function under1000(number) {
+/* =========================================================
+   NUMERO EN LETRAS
+========================================================= */
 
-    if (number <= 20) {
-      return units[number];
+function unidades(n) {
+
+    const lista = [
+        "",
+        "uno",
+        "dos",
+        "tres",
+        "cuatro",
+        "cinco",
+        "seis",
+        "siete",
+        "ocho",
+        "nueve",
+        "diez",
+        "once",
+        "doce",
+        "trece",
+        "catorce",
+        "quince",
+        "dieciséis",
+        "diecisiete",
+        "dieciocho",
+        "diecinueve",
+        "veinte"
+    ];
+
+    return lista[n];
+
+}
+
+
+function menores100(n) {
+
+    if (n <= 20) {
+        return unidades(n);
     }
 
-    if (number < 100) {
 
-      if (number % 10 === 0) {
-        return tens[number / 10];
-      }
+    if (n < 30) {
 
-      if (number < 30) {
-        return "veinti" + units[number - 20];
-      }
+        return (
+            "veinti" +
+            unidades(n - 20)
+        );
 
-      return (
-        tens[Math.floor(number / 10)] +
-        " y " +
-        units[number % 10]
-      );
     }
 
-    if (number === 100) {
-      return "cien";
+
+    const decenas = [
+        "",
+        "",
+        "veinte",
+        "treinta",
+        "cuarenta",
+        "cincuenta",
+        "sesenta",
+        "setenta",
+        "ochenta",
+        "noventa"
+    ];
+
+
+    const d =
+        Math.floor(n / 10);
+
+    const u =
+        n % 10;
+
+
+    if (u === 0) {
+        return decenas[d];
     }
 
-    if (number < 200) {
-      return "ciento " + under1000(number - 100);
-    }
 
     return (
-      hundreds[Math.floor(number / 100)] +
-      (number % 100
-        ? " " + under1000(number % 100)
-        : "")
+        decenas[d] +
+        " y " +
+        unidades(u)
     );
-  }
+
+}
 
 
-  function group(number, label, singular) {
+function menores1000(n) {
 
-    if (!number) {
-      return "";
+    if (n < 100) {
+        return menores100(n);
     }
 
-    if (number === 1) {
-      return singular;
+
+    if (n === 100) {
+        return "cien";
     }
 
-    return under1000(number) + " " + label;
-  }
+
+    const centenas = [
+        "",
+        "ciento",
+        "doscientos",
+        "trescientos",
+        "cuatrocientos",
+        "quinientos",
+        "seiscientos",
+        "setecientos",
+        "ochocientos",
+        "novecientos"
+    ];
 
 
-  const parts = [];
+    const c =
+        Math.floor(n / 100);
 
-  const millions =
-    Math.floor(number / 1000000);
-
-  number %= 1000000;
-
-  const thousands =
-    Math.floor(number / 1000);
-
-  number %= 1000;
+    const resto =
+        n % 100;
 
 
-  if (millions) {
-    parts.push(
-      group(
-        millions,
-        "millones",
-        "un millón"
-      )
+    if (resto === 0) {
+        return centenas[c];
+    }
+
+
+    return (
+        centenas[c] +
+        " " +
+        menores100(resto)
     );
-  }
-
-
-  if (thousands) {
-
-    if (thousands === 1) {
-      parts.push("mil");
-    }
-    else {
-      parts.push(
-        under1000(thousands) + " mil"
-      );
-    }
-  }
-
-
-  if (number) {
-    parts.push(
-      under1000(number)
-    );
-  }
-
-
-  return parts.join(" ");
-}
-
-
-function pluralPeso(number) {
-
-  return number === 1
-    ? "peso"
-    : "pesos";
 
 }
 
 
-/* =========================
-   TOTAL GENERAL
-========================= */
-
-function totalRows() {
-
-  return $$(".main-row").reduce(
-    (sum, row) => {
-
-      return (
-        sum +
-        (
-          moneyNumber(
-            $(".row-total", row).value
-          ) || 0
-        )
-      );
-
-    },
-    0
-  );
-
-}
-
-
-function updateTotals() {
-
-  let total = 0;
-
-
-  $$(".main-row").forEach(row => {
-
-    const quantity =
-      moneyNumber(
-        $(".row-qty", row).value
-      );
-
-    const price =
-      moneyNumber(
-        $(".row-price", row).value
-      );
-
-    const rowTotal =
-      quantity * price;
-
-
-    $(".row-total", row).value =
-      formatMoney(rowTotal);
-
-
-    total += rowTotal;
-
-  });
-
-
-  $("#totalGeneral").textContent =
-    formatMoney(total);
-
-
-  $("#totalLetras").textContent =
-    numberToWords(total) +
-    " " +
-    pluralPeso(total);
-
-
-  $("#compromisoActual").textContent =
-    formatMoney(total);
-
-
-  updateDeliveries();
-  updateDetails();
-  syncBudgetMonto();
-
-}
-
-
-/* =========================
-   NUMERAR RENGLONES
-========================= */
-
-function renumber(
-  container,
-  selector = ".main-row"
-) {
-
-  $$(selector, container).forEach(
-    (row, index) => {
-
-      const number = index + 1;
-
-      $(".row-number", row)
-        .textContent = number;
-
-      row.dataset.renglon =
-        number;
-
-    }
-  );
-
-}
-
-
-/* =========================
-   CREAR RENGLON
-========================= */
-
-function makeMainRow() {
-
-  const row =
-    document.createElement("tr");
-
-
-  row.className =
-    "main-row";
-
-  row.dataset.renglon =
-    "1";
-
-
-  row.innerHTML = `
-
-    <td class="row-number">
-      1
-    </td>
-
-    <td>
-      <input
-        class="row-qty numeric"
-        type="number"
-        min="0"
-        step="any"
-        value=""
-      >
-    </td>
-
-    <td>
-
-      <div class="item-area">
-
-        <div class="row-tools no-print">
-
-          <button
-            type="button"
-            class="btn-delete-row"
-          >
-            Eliminar
-          </button>
-
-        </div>
-
-        <textarea
-          class="item-description"
-          placeholder=""
-        ></textarea>
-
-        <input
-          class="item-brand"
-          placeholder="Marca: "
-        >
-
-      </div>
-
-    </td>
-
-    <td>
-
-      <input
-        class="row-period numeric"
-        value=""
-      >
-
-    </td>
-
-    <td>
-
-      <input
-        class="row-price money numeric"
-        inputmode="decimal"
-        placeholder="0,00"
-      >
-
-    </td>
-
-    <td>
-
-      <input
-        class="row-total money numeric"
-        value="0,00"
-        readonly
-      >
-
-    </td>
-
-  `;
-
-
-  $(
-    ".row-qty",
-    row
-  ).addEventListener(
-    "input",
-    updateTotals
-  );
-
-
-  $(
-    ".row-price",
-    row
-  ).addEventListener(
-    "input",
-    updateTotals
-  );
-
-
-  $(
-    ".btn-delete-row",
-    row
-  ).addEventListener(
-    "click",
-    () =>
-      removeMainRow(
-        $(".btn-delete-row", row)
-      )
-  );
-
-
-  return row;
-
-}
-
-
-/* =========================
-   AGREGAR RENGLON
-========================= */
-
-function addMainRow() {
-
-  const tbody =
-    $("#renglones");
-
-  const row =
-    makeMainRow();
-
-
-  tbody.appendChild(row);
-
-  renumber(tbody);
-
-  updateTotals();
-
-}
-
-
-/* =========================
-   ELIMINAR RENGLON
-========================= */
-
-function removeMainRow(button) {
-
-  const rows =
-    $$(".main-row");
-
-
-  if (rows.length === 1) {
-    return;
-  }
-
-
-  button
-    .closest("tr")
-    .remove();
-
-
-  renumber(
-    $("#renglones")
-  );
-
-
-  updateTotals();
-
-}
-
-
-/* =========================
-   CRONOGRAMA DE ENTREGAS
-========================= */
-
-function updateDeliveries() {
-
-  const body =
-    $("#entregas");
-
-  const existing =
-    [...body.querySelectorAll("tr")];
-
-  const rows =
-    $$(".main-row");
-
-
-  while (
-    existing.length > rows.length
-  ) {
-
-    existing.pop().remove();
-
-  }
-
-
-  rows.forEach(
-    (main, index) => {
-
-      let tr =
-        body.querySelectorAll("tr")[index];
-
-
-      if (!tr) {
-
-        tr =
-          document.createElement("tr");
-
-
-        tr.innerHTML = `
-
-          <td class="delivery-number"></td>
-
-          <td>
-            <input
-              class="delivery-qty"
-              type="number"
-              min="0"
-              step="any"
-            >
-          </td>
-
-          <td>
-            <input
-              class="delivery-deadline"
-            >
-          </td>
-
-          <td>
-            <textarea
-              class="delivery-place"
-              placeholder=""
-            ></textarea>
-          </td>
-
-        `;
-
-
-        body.appendChild(tr);
-
-      }
-
-
-      $(".delivery-number", tr)
-        .textContent =
-        index + 1;
-
-
-      $(".delivery-qty", tr)
-        .value =
-        $(".row-qty", main).value;
-
-    }
-  );
-
-}
-
-
-/* =========================
-   DETALLE DEL ANEXO
-========================= */
-
-function updateDetails() {
-
-  const body =
-    $("#detalles");
-
-  const rows =
-    $$(".main-row");
-
-  const existing =
-    [...body.querySelectorAll("tr")];
-
-
-  while (
-    existing.length > rows.length
-  ) {
-
-    existing.pop().remove();
-
-  }
-
-
-  rows.forEach(
-    (main, index) => {
-
-      let tr =
-        body.querySelectorAll("tr")[index];
-
-
-      if (!tr) {
-
-        tr =
-          document.createElement("tr");
-
-
-        tr.innerHTML = `
-
-          <td class="detail-number"></td>
-
-          <td>
-
-            <div class="detail-main"></div>
-
-            <div class="detail-separator">
-              ------------------------------------Detalle---------------------------------------
-            </div>
-
-            <textarea
-              class="delivery-detail"
-              placeholder=""
-            ></textarea>
-
-          </td>
-
-        `;
-
-
-        body.appendChild(tr);
-
-      }
-
-
-      $(".detail-number", tr)
-        .textContent =
-        index + 1;
-
-
-      const description =
-        $(".item-description", main)
-          .value
-          .trim();
-
-
-      const brand =
-        $(".item-brand", main)
-          .value
-          .trim();
-
-
-      $(".detail-main", tr)
-        .textContent =
-        description +
-        (
-          brand
-            ? "\n" + brand
-            : ""
+function numeroLetras(n) {
+
+    n =
+        Math.floor(
+            Math.abs(
+                Number(n) || 0
+            )
         );
 
+
+    if (n === 0) {
+        return "cero";
     }
-  );
 
-}
 
+    if (n < 1000) {
+        return menores1000(n);
+    }
 
-/* =========================
-   PARTIDAS PRESUPUESTARIAS
-========================= */
 
-function addBudgetRow() {
+    if (n < 1000000) {
 
-  const tr =
-    document.createElement("tr");
+        const miles =
+            Math.floor(n / 1000);
 
+        const resto =
+            n % 1000;
 
-  const names = [
-    "Ejer",
-    "Juri",
-    "SA",
-    "Unor",
-    "Cpn1",
-    "Cpn2",
-    "Cpn3",
-    "Fina",
-    "Func",
-    "SFunc",
-    "INC",
-    "Ppal",
-    "Ppar",
-    "Spar",
-    "Fufi",
-    "Ubge"
-  ];
 
+        let texto;
 
-  tr.innerHTML =
-    names
-      .map(
-        (_, index) =>
-          `
-          <td>
-            <input
-              class="budget-field"
-              data-index="${index}"
-            >
-          </td>
-          `
-      )
-      .join("") +
-
-      `
-
-      <td>
-
-        <input
-          class="budget-monto money"
-          value="0,00"
-          readonly
-        >
-
-      </td>
-
-      `;
-
-
-  $("#partidas")
-    .appendChild(tr);
-
-
-  syncBudgetMonto();
-
-}
-
-
-/* =========================
-   MONTO DEL ANEXO
-========================= */
-
-function syncBudgetMonto() {
-
-  $$("#partidas .budget-monto")
-    .forEach(input => {
-
-      input.value =
-        formatMoney(
-          totalRows()
-        );
-
-    });
-
-}
-
-
-/* =========================
-   CAMPOS COMUNES
-========================= */
-
-function copyCommonFields() {
-
-  const fecha =
-    $("#fechaEmision").value;
-
-  const numero =
-    $("#numeroOC").value;
-
-
-  $$(
-    '[data-copy="fechaEmision"]'
-  ).forEach(element => {
-
-    element.value =
-      fecha;
-
-  });
-
-
-  $$(
-    '[data-copy="numeroOC"]'
-  ).forEach(element => {
-
-    element.value =
-      numero;
-
-  });
-
-
-  $(".print-date");
-
-  $$(".print-date")
-    .forEach(element => {
-
-      element.textContent =
-        fecha;
-
-    });
-
-}
-
-
-/* =========================
-   FECHA ACTUAL
-========================= */
-
-function setToday() {
-
-  const date =
-    new Date();
-
-
-  const value =
-    String(
-      date.getDate()
-    ).padStart(2, "0") +
-
-    "/" +
-
-    String(
-      date.getMonth() + 1
-    ).padStart(2, "0") +
-
-    "/" +
-
-    date.getFullYear();
-
-
-  $("#fechaEmision").value =
-    value;
-
-
-  $("#fechaImpresion").value =
-    value;
-
-
-  copyCommonFields();
-
-}
-
-
-/* =========================
-   PROVEEDOR
-========================= */
-
-function syncProviderAndMeta() {
-
-  const provider =
-    $(".provider-inline")?.value || "";
-
-
-  $$(".page-3 .provider-inline, .page-4 .provider-inline")
-    .forEach(
-      (element, index) => {
-
-        if (index > 0) {
-          element.value =
-            provider;
+        if (miles === 1) {
+            texto = "mil";
+        } else {
+            texto =
+                menores1000(miles) +
+                " mil";
         }
 
-      }
+
+        if (resto) {
+
+            texto +=
+                " " +
+                menores1000(resto);
+
+        }
+
+
+        return texto;
+    }
+
+
+    if (n < 1000000000) {
+
+        const millones =
+            Math.floor(
+                n / 1000000
+            );
+
+        const resto =
+            n % 1000000;
+
+
+        let texto;
+
+        if (millones === 1) {
+            texto = "un millón";
+        } else {
+            texto =
+                menores1000(millones) +
+                " millones";
+        }
+
+
+        if (resto) {
+
+            texto +=
+                " " +
+                numeroLetras(resto);
+
+        }
+
+
+        return texto;
+    }
+
+
+    return String(n);
+
+}
+
+
+/* =========================================================
+   FECHA
+========================================================= */
+
+function fechaHoy() {
+
+    const ahora =
+        new Date();
+
+
+    const dia =
+        String(
+            ahora.getDate()
+        ).padStart(2, "0");
+
+
+    const mes =
+        String(
+            ahora.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const año =
+        ahora.getFullYear();
+
+
+    return (
+        dia +
+        "/" +
+        mes +
+        "/" +
+        año
     );
 
 }
 
 
-/* =========================
+/* =========================================================
+   CREAR RENGLÓN
+========================================================= */
+
+function crearRenglon(numero) {
+
+    const tr =
+        document.createElement("tr");
+
+
+    tr.className =
+        "renglon";
+
+
+    tr.innerHTML = `
+
+        <td class="renglon-numero">
+            ${numero}
+        </td>
+
+
+        <td>
+
+            <input
+                type="number"
+                min="0"
+                step="any"
+                class="campo-cantidad"
+                value=""
+            >
+
+        </td>
+
+
+        <td>
+
+            <textarea
+                class="descripcion"
+                placeholder=""
+            ></textarea>
+
+
+            <input
+                type="text"
+                class="marca"
+                placeholder="Marca: "
+            >
+
+        </td>
+
+
+        <td>
+
+            <input
+                type="text"
+                class="campo-periodo"
+                value=""
+            >
+
+        </td>
+
+
+        <td>
+
+            <input
+                type="text"
+                class="campo-precio"
+                inputmode="decimal"
+                placeholder="0,00"
+            >
+
+        </td>
+
+
+        <td>
+
+            <input
+                type="text"
+                class="campo-total"
+                value="0,00"
+                readonly
+            >
+
+        </td>
+
+    `;
+
+
+    /*
+       Cada vez que cambia cantidad
+       o precio, recalculamos.
+    */
+
+    tr.querySelector(
+        ".campo-cantidad"
+    ).addEventListener(
+        "input",
+        recalcularTodo
+    );
+
+
+    tr.querySelector(
+        ".campo-precio"
+    ).addEventListener(
+        "input",
+        recalcularTodo
+    );
+
+
+    /*
+       La descripción también actualiza
+       el anexo automáticamente.
+    */
+
+    tr.querySelector(
+        ".descripcion"
+    ).addEventListener(
+        "input",
+        actualizarDetalles
+    );
+
+
+    tr.querySelector(
+        ".marca"
+    ).addEventListener(
+        "input",
+        actualizarDetalles
+    );
+
+
+    return tr;
+
+}
+
+
+/* =========================================================
+   AGREGAR RENGLÓN
+========================================================= */
+
+function agregarRenglon() {
+
+    const tabla =
+        $("#renglones");
+
+
+    const cantidadActual =
+        tabla.querySelectorAll(
+            ".renglon"
+        ).length;
+
+
+    const nuevo =
+        crearRenglon(
+            cantidadActual + 1
+        );
+
+
+    tabla.appendChild(
+        nuevo
+    );
+
+
+    renumerarRenglones();
+
+    recalcularTodo();
+
+    actualizarEntregas();
+
+    actualizarDetalles();
+
+}
+
+
+/* =========================================================
+   QUITAR RENGLÓN
+========================================================= */
+
+function quitarRenglon() {
+
+    const tabla =
+        $("#renglones");
+
+
+    const renglones =
+        tabla.querySelectorAll(
+            ".renglon"
+        );
+
+
+    /*
+       Nunca dejamos la tabla
+       sin ningún renglón.
+    */
+
+    if (renglones.length <= 1) {
+
+        alert(
+            "La Orden de Compra debe tener al menos un renglón."
+        );
+
+        return;
+
+    }
+
+
+    renglones[
+        renglones.length - 1
+    ].remove();
+
+
+    renumerarRenglones();
+
+    recalcularTodo();
+
+    actualizarEntregas();
+
+    actualizarDetalles();
+
+}
+
+
+/* =========================================================
+   RENUMERAR
+========================================================= */
+
+function renumerarRenglones() {
+
+    const renglones =
+        $all(
+            "#renglones .renglon"
+        );
+
+
+    renglones.forEach(
+        (renglon, index) => {
+
+            renglon.querySelector(
+                ".renglon-numero"
+            ).textContent =
+                index + 1;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CALCULAR RENGLONES
+========================================================= */
+
+function recalcularTodo() {
+
+    let total =
+        0;
+
+
+    const renglones =
+        $all(
+            "#renglones .renglon"
+        );
+
+
+    renglones.forEach(
+        renglon => {
+
+            const cantidad =
+                Number(
+                    renglon.querySelector(
+                        ".campo-cantidad"
+                    ).value
+                ) || 0;
+
+
+            const precio =
+                parseMoney(
+                    renglon.querySelector(
+                        ".campo-precio"
+                    ).value
+                );
+
+
+            const subtotal =
+                cantidad * precio;
+
+
+            renglon.querySelector(
+                ".campo-total"
+            ).value =
+                money(subtotal);
+
+
+            total +=
+                subtotal;
+
+        }
+    );
+
+
+    /*
+       TOTAL GENERAL
+    */
+
+    $("#totalGeneral")
+        .textContent =
+            money(total);
+
+
+    /*
+       TOTAL EN LETRAS
+    */
+
+    const palabraPeso =
+        total === 1
+            ? "peso"
+            : "pesos";
+
+
+    $("#totalLetras")
+        .textContent =
+            numeroLetras(total) +
+            " " +
+            palabraPeso;
+
+
+    /*
+       TOTAL DEL ANEXO
+    */
+
+    $("#totalCompromiso")
+        .textContent =
+            money(total);
+
+
+    /*
+       MONTOS DE LAS PARTIDAS
+    */
+
+    $all(
+        ".campo-monto"
+    ).forEach(
+        campo => {
+
+            campo.value =
+                money(total);
+
+        }
+    );
+
+
+    actualizarEntregas();
+
+    actualizarDetalles();
+
+}
+
+
+/* =========================================================
+   CRONOGRAMA
+========================================================= */
+
+function crearEntrega(numero, cantidad) {
+
+    const tr =
+        document.createElement("tr");
+
+
+    tr.innerHTML = `
+
+        <td
+            class="entrega-numero"
+            style="text-align:center;font-weight:bold;"
+        >
+            ${numero}
+        </td>
+
+
+        <td>
+
+            <input
+                class="campo-cantidad-entrega"
+                type="number"
+                min="0"
+                step="any"
+                value="${cantidad || ""}"
+            >
+
+        </td>
+
+
+        <td>
+
+            <input
+                class="campo-plazo"
+                type="text"
+            >
+
+        </td>
+
+
+        <td>
+
+            <textarea
+                class="campo-entrega"
+            ></textarea>
+
+        </td>
+
+    `;
+
+
+    return tr;
+
+}
+
+
+function actualizarEntregas() {
+
+    const principal =
+        $("#entregas");
+
+
+    const secundaria =
+        $("#entregasPagina2");
+
+
+    const renglones =
+        $all(
+            "#renglones .renglon"
+        );
+
+
+    principal.innerHTML = "";
+
+    secundaria.innerHTML = "";
+
+
+    renglones.forEach(
+        (renglon, index) => {
+
+            const numero =
+                index + 1;
+
+
+            const cantidad =
+                renglon.querySelector(
+                    ".campo-cantidad"
+                ).value;
+
+
+            const fila1 =
+                crearEntrega(
+                    numero,
+                    cantidad
+                );
+
+
+            const fila2 =
+                crearEntrega(
+                    numero,
+                    cantidad
+                );
+
+
+            principal.appendChild(
+                fila1
+            );
+
+
+            secundaria.appendChild(
+                fila2
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DETALLES DEL ANEXO
+========================================================= */
+
+function actualizarDetalles() {
+
+    const tbody =
+        $("#detalles");
+
+
+    tbody.innerHTML = "";
+
+
+    const renglones =
+        $all(
+            "#renglones .renglon"
+        );
+
+
+    renglones.forEach(
+        (renglon, index) => {
+
+            const numero =
+                index + 1;
+
+
+            const descripcion =
+                renglon.querySelector(
+                    ".descripcion"
+                ).value;
+
+
+            const marca =
+                renglon.querySelector(
+                    ".marca"
+                ).value;
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td
+                    style="
+                        text-align:center;
+                        font-weight:bold;
+                    "
+                >
+                    ${numero}
+                </td>
+
+
+                <td>
+
+                    <textarea
+                        class="detalle-texto"
+                    >${descripcion}${marca ? "\n" + marca : ""}</textarea>
+
+                </td>
+
+            `;
+
+
+            /*
+               Si el usuario modifica
+               el detalle del anexo,
+               queda editable.
+            */
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PARTIDAS PRESUPUESTARIAS
+========================================================= */
+
+function crearPartida() {
+
+    const tr =
+        document.createElement("tr");
+
+
+    const campos = [
+        "Ejer",
+        "Juri",
+        "SA",
+        "Unor",
+        "Cpn1",
+        "Cpn2",
+        "Cpn3",
+        "Fina",
+        "Func",
+        "SFunc",
+        "INC",
+        "Ppal",
+        "Ppar",
+        "Spar",
+        "Fufi",
+        "Ubge"
+    ];
+
+
+    let html = "";
+
+
+    campos.forEach(
+        campo => {
+
+            html += `
+
+                <td>
+
+                    <input
+                        type="text"
+                        title="${campo}"
+                    >
+
+                </td>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+        <td>
+
+            <input
+                type="text"
+                class="campo-monto"
+                value="0,00"
+                readonly
+            >
+
+        </td>
+
+    `;
+
+
+    tr.innerHTML =
+        html;
+
+
+    return tr;
+
+}
+
+
+function agregarPartida() {
+
+    $("#partidas")
+        .appendChild(
+            crearPartida()
+        );
+
+
+    recalcularTodo();
+
+}
+
+
+/* =========================================================
+   SINCRONIZAR DATOS
+========================================================= */
+
+function sincronizarDatos() {
+
+    const fecha =
+        $("#fecha").value;
+
+
+    const numero =
+        $("#numeroOC").value;
+
+
+    const proveedor =
+        $("#proveedor").value;
+
+
+    $all(
+        '[data-ref="fecha"]'
+    ).forEach(
+        campo => {
+
+            campo.value =
+                fecha;
+
+        }
+    );
+
+
+    $all(
+        '[data-ref="numeroOC"]'
+    ).forEach(
+        campo => {
+
+            campo.value =
+                numero;
+
+        }
+    );
+
+
+    $all(
+        '[data-ref="proveedor"]'
+    ).forEach(
+        campo => {
+
+            campo.value =
+                proveedor;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DESCARGAR PDF
+========================================================= */
+
+function descargarPDF() {
+
+    const documento =
+        document.getElementById(
+            "documento"
+        );
+
+
+    /*
+       El nombre se arma con
+       el número de OC.
+    */
+
+    let numero =
+        $("#numeroOC").value
+            .trim();
+
+
+    if (!numero) {
+        numero = "SinNumero";
+    }
+
+
+    const opciones = {
+
+        margin: 0,
+
+        filename:
+            "Orden_de_Compra_" +
+            numero +
+            ".pdf",
+
+        image: {
+
+            type: "jpeg",
+
+            quality: 0.98
+
+        },
+
+        html2canvas: {
+
+            scale: 2,
+
+            useCORS: true,
+
+            allowTaint: true,
+
+            backgroundColor: "#ffffff",
+
+            logging: false
+
+        },
+
+        jsPDF: {
+
+            unit: "mm",
+
+            format: "a4",
+
+            orientation: "portrait"
+
+        },
+
+        pagebreak: {
+
+            mode: [
+                "css",
+                "legacy"
+            ],
+
+            avoid: [
+                "tr",
+                ".firmas",
+                ".texto-legal"
+            ]
+
+        }
+
+    };
+
+
+    /*
+       Desactivamos temporalmente
+       el foco amarillo.
+    */
+
+    document.body.classList.add(
+        "generando-pdf"
+    );
+
+
+    html2pdf()
+
+        .set(opciones)
+
+        .from(documento)
+
+        .save()
+
+        .finally(
+            () => {
+
+                document.body.classList.remove(
+                    "generando-pdf"
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
    INICIO
-========================= */
+========================================================= */
 
 document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    setToday();
+    "DOMContentLoaded",
+    function () {
 
 
-    /* SOLO UN RENGLÓN INICIAL */
+        /* ---------------------------------
+           FECHA
+        --------------------------------- */
 
-    addMainRow();
-
-
-    /* SOLO UNA PARTIDA INICIAL */
-
-    addBudgetRow();
+        $("#fecha").value =
+            fechaHoy();
 
 
-    /* BOTONES */
+        /*
+           IMPORTANTE:
 
-    $("#btnAgregarRenglon")
-      .addEventListener(
-        "click",
-        addMainRow
-      );
+           SOLO UN RENGLÓN AL ABRIR.
+        */
 
-
-    $("#btnAgregarAnexo")
-      .addEventListener(
-        "click",
-        addBudgetRow
-      );
+        $("#renglones")
+            .appendChild(
+                crearRenglon(1)
+            );
 
 
-    /* CAMPOS COMUNES */
+        /*
+           SOLO UNA PARTIDA AL ABRIR.
+        */
 
-    $("#fechaEmision")
-      .addEventListener(
-        "input",
-        copyCommonFields
-      );
-
-
-    $("#numeroOC")
-      .addEventListener(
-        "input",
-        copyCommonFields
-      );
+        $("#partidas")
+            .appendChild(
+                crearPartida()
+            );
 
 
-    /* CAMBIOS GENERALES */
+        /*
+           BOTÓN AGREGAR RENGLÓN
+        */
 
-    document.addEventListener(
-      "input",
-      event => {
-
-        if (
-          event.target.matches(
-            ".row-qty, .row-price"
-          )
-        ) {
-
-          updateTotals();
-
-        }
+        $("#agregarRenglon")
+            .addEventListener(
+                "click",
+                agregarRenglon
+            );
 
 
-        if (
-          event.target.matches(
-            ".budget-field"
-          )
-        ) {
+        /*
+           BOTÓN QUITAR RENGLÓN
+        */
 
-          syncBudgetMonto();
-
-        }
-
-
-        if (
-          event.target.matches(
-            ".provider-inline"
-          )
-        ) {
-
-          syncProviderAndMeta();
-
-        }
-
-      }
-    );
+        $("#quitarRenglon")
+            .addEventListener(
+                "click",
+                quitarRenglon
+            );
 
 
-    /* ESTADO INICIAL */
+        /*
+           BOTÓN AGREGAR PARTIDA
+        */
 
-    updateTotals();
+        $("#agregarPartida")
+            .addEventListener(
+                "click",
+                agregarPartida
+            );
 
-    updateDeliveries();
 
-    updateDetails();
+        /*
+           BOTÓN DESCARGAR PDF
+        */
 
-  }
+        $("#descargarPDF")
+            .addEventListener(
+                "click",
+                descargarPDF
+            );
+
+
+        /*
+           DATOS GENERALES
+        */
+
+        $("#fecha")
+            .addEventListener(
+                "input",
+                sincronizarDatos
+            );
+
+
+        $("#numeroOC")
+            .addEventListener(
+                "input",
+                sincronizarDatos
+            );
+
+
+        $("#proveedor")
+            .addEventListener(
+                "input",
+                sincronizarDatos
+            );
+
+
+        /*
+           ESTADO INICIAL
+        */
+
+        sincronizarDatos();
+
+        recalcularTodo();
+
+        actualizarEntregas();
+
+        actualizarDetalles();
+
+    }
 );
